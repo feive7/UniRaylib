@@ -5,6 +5,7 @@
 #include "raymath.h"
 #include "rlgl.h"
 #include "Textures.h"
+#include "Shaders.h"
 #include "MapElements.h"
 #include "testmap.h"
 
@@ -22,6 +23,7 @@ int main(void) {
     freecam.projection = CAMERA_PERSPECTIVE;             // Camera mode type
 
     InitTextures();
+    InitShaders();
     InitTestMap();
 
     DisableCursor();
@@ -40,6 +42,8 @@ int main(void) {
             EndMode3D();
         EndDrawing();
     }
+    UnloadTextures();
+    UnloadShaders();
     CloseWindow();
     return 0;
 }

@@ -141,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MapElements.h" />
+    <ClInclude Include="Shaders.h" />
     <ClInclude Include="testmap.h" />
     <ClInclude Include="Textures.h" />
   </ItemGroup>

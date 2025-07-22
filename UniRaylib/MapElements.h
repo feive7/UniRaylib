@@ -12,6 +12,7 @@ public:
 	float height;
 	Texture* texture;
 	Color tint;
+	Shader* shader;
 };
 class GameMap {
 public:
@@ -20,6 +21,7 @@ public:
 		for (Wall& wall : walls) {
 			Vector2* points = wall.points;
 
+			BeginShaderMode(*wall.shader);
 			rlBegin(RL_QUADS);
 			rlColor4ub(wall.tint.r,wall.tint.g,wall.tint.b,wall.tint.a);
 			rlSetTexture(wall.texture->id);
@@ -54,6 +56,7 @@ public:
 			}
 
 			rlEnd();
+			EndShaderMode();
 		}
 	}
 };
