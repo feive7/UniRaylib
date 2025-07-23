@@ -70,6 +70,7 @@ int main(void) {
         if (IsKeyDown(KEY_A)) player.move({ -0.1f,0.0f,0.0f }, &MAP);
         if (IsKeyDown(KEY_S)) player.move({ 0.0f,0.0f,-0.1f }, &MAP);
         if (IsKeyDown(KEY_D)) player.move({ 0.1f,0.0f,0.0f }, &MAP);
+        if (IsKeyPressed(KEY_V)) player.noClipping = !player.noClipping;
         if (!IsKeyDown(KEY_TAB)) player.attachCamera(&freecam);
         MAP.renderPortals(&freecam);
         playerlight.position = freecam.position;
