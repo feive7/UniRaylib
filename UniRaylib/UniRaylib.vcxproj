@@ -140,6 +140,7 @@
     <ClCompile Include="UniRaylib.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Lighting.h" />
     <ClInclude Include="MapElements.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Shaders.h" />

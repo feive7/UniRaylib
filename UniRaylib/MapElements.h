@@ -185,7 +185,7 @@ public:
 			portal.updatePerspective(playercam);
 			for (int i = 0; i < 2; i++) {
 				BeginTextureMode(portal.RTextures[i]);
-				ClearBackground(RAYWHITE); // Clear the background
+				ClearBackground(BLACK); // Clear the background
 				BeginMode3D(portal.RTCameras[i]);
 				draw();
 				EndMode3D();

@@ -6,6 +6,7 @@
 #include "rlgl.h"
 #include "Textures.h"
 #include "Shaders.h"
+#include "Lighting.h"
 #include "MapElements.h"
 #include "Player.h"
 #include "testmap.h"
@@ -35,6 +36,9 @@ int main(void) {
     InitTestMap();
     MAP.portals[0].InitPortals();
 
+    Light playerlight = CreateLight({ 0.0f,0.0f,0.0f }, 2.0f);
+    LightPortal lightPortal = CreateLightPortal({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,24.0f });
+
     Camera freecam = { 0 };
     ResetCamera(&freecam);
 
@@ -50,9 +54,11 @@ int main(void) {
         // Game logic
         UpdateCameraScene(&freecam,&MAP);
         MAP.renderPortals(&freecam);
+        playerlight.position = freecam.position;
+        UpdateLight(playerlight);
 
         BeginDrawing();
-            ClearBackground(RAYWHITE); // Clear the background
+            ClearBackground(BLACK); // Clear the background
             BeginMode3D(freecam);
                 MAP.draw();
                 MAP.draw_portals();
