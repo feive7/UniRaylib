@@ -1,7 +1,9 @@
 #include <vector>
 struct Playerstart {
-	Vector3 position;
-	Vector3 target;
+	Vector3 player_position;
+	Vector3 player_target;
+	Vector3 camera_position;
+	Vector3 camera_target;
 };
 class Linedef {
 public:
@@ -22,6 +24,22 @@ public:
 	Vector2 getNormal() {
 		Vector2 dir = getDirection();
 		return { -dir.y,dir.x };
+	}
+	float lineDistance(Vector2 p) {
+		Vector2 ab = Vector2Subtract(end, start);
+		Vector2 ap = Vector2Subtract(p, start);
+		float ab_len2 = Vector2LengthSqr(ab);
+
+		if (ab_len2 == 0.0f) return Vector2Distance(p, start); // a == b
+
+		float t = Vector2DotProduct(ap, ab) / ab_len2;
+		t = fmaxf(0.0f, fminf(1.0f, t)); // Clamp to segment
+
+		Vector2 projection = Vector2Add(start, Vector2Scale(ab, t));
+		return Vector2Distance(p, projection);
+	}
+	bool CheckCollisionLine(Vector2 start, Vector2 end) {
+		return CheckCollisionLines(this->start, this->end, start, end, nullptr);
 	}
 };
 class Wall {

@@ -41,6 +41,6 @@ LightPortal CreateLightPortal(Vector3 pos1, Vector3 pos2) {
 	lp.pos1_loc = GetShaderLocation(shader_lighting, TextFormat("lightPortals[%i].pos1", lightPortalsCount));
 	lp.pos2_loc = GetShaderLocation(shader_lighting, TextFormat("lightPortals[%i].pos2", lightPortalsCount));
 	lightPortalsCount++;
-	UpdateLightPortal(lp);
+	UpdateLightPortal(lp); 
 	return lp;
 }

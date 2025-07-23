@@ -1,5 +1,61 @@
 #define MOUSE_SENSITIVITY 100
-void UpdateCameraScene(Camera* sceneCamera, GameMap* scene) {
+#define CAMERA_MODE_FIRST_PERSON 1
+class Player {
+public:
+	Vector3 position;
+	Vector3 target;
+	float height;
+	float radius;
+	Camera* camera;
+	Vector3 facing() {
+		return Vector3Normalize(Vector3Subtract(target, position));
+	}
+	Vector3 headPos() {
+		return Vector3Add(position, { 0.0f,height,0.0f });
+	}
+	void move(Vector3 movement, GameMap* scene) {
+		Vector3 forward = facing(); forward.y = 0.0f; forward = Vector3Normalize(forward);
+		Vector3 right = { -forward.z,0.0f,forward.x };
+		Vector3 oldpos = position;
+		Vector3 newpos = position + Vector3Scale(forward,movement.z) + Vector3Scale(right,movement.x);
+		Vector3 collisionpos = position + Vector3Scale(Vector3Normalize(movement), radius);
+		for (Wall& wall : scene->walls) {
+			for (int i = 0; i < 4; i++) {
+				Vector2 A = wall.points[i];
+				Vector2 B = wall.points[(i+1)%4];
+				Linedef line = { A,B };
+				if (CheckCollisionLines(A, B, { oldpos.x,oldpos.z }, { collisionpos.x,collisionpos.z}, nullptr)) {
+					newpos = oldpos;
+				}
+			}
+		}
+		for (Portal& portal : scene->portals) {
+			Linedef* portal1 = &portal.sectors[0];
+			Linedef* portal2 = &portal.sectors[1];
+			if (CheckCollisionLines(portal1->start, portal1->end, { oldpos.x, oldpos.z }, { newpos.x, newpos.z }, nullptr) && newpos.y + height > portal1->z && newpos.y < portal1->z + portal.height) {
+				//printf("Teleported to portal 2\n");
+				portal.Teleport(&newpos, 2);
+				break;
+			}
+			if (CheckCollisionLines(portal2->start, portal2->end, { oldpos.x, oldpos.z }, { newpos.x, newpos.z }, nullptr) && newpos.y + height > portal2->z && newpos.y < portal2->z + portal.height) {
+				//printf("Teleported to portal 1\n");
+				portal.Teleport(&newpos, 1);
+				break;
+			}
+		}
+		position = newpos;
+		target = position + forward;
+	}
+	void attachCamera(Camera* camera, int mode = 1) {
+		if (mode == CAMERA_MODE_FIRST_PERSON) {
+			Vector3 camforward = GetCameraForward(camera);
+			camera->position = headPos();
+			camera->target = camera->position + camforward;
+			target = camera->position + camforward;
+		}
+	}
+};
+void UpdateCameraScene(Camera* sceneCamera, GameMap* scene, bool move = false, bool ignore_portals = false) {
 	float speed = 0.2f;
 	if (IsKeyDown(KEY_LEFT_SHIFT)) speed = 0.5f;
 	if (IsKeyDown(KEY_LEFT_CONTROL)) speed = 0.08f;
@@ -11,18 +67,20 @@ void UpdateCameraScene(Camera* sceneCamera, GameMap* scene) {
 
 	Vector3 oldpos = sceneCamera->position;
 	Vector3 newpos = sceneCamera->position + movement;
-	for (Portal& portal : scene->portals) {
-		Linedef* portal1 = &portal.sectors[0];
-		Linedef* portal2 = &portal.sectors[1];
-		if (CheckCollisionLines(portal1->start, portal1->end, { oldpos.x, oldpos.z}, { newpos.x, newpos.z }, nullptr) && newpos.y > portal1->z && newpos.y < portal1->z + portal.height) {
-			printf("Teleported to portal 2\n");
-			portal.Teleport(&newpos,2);
-			break;
-		}
-		if (CheckCollisionLines(portal2->start, portal2->end, { oldpos.x, oldpos.z }, { newpos.x, newpos.z }, nullptr) && newpos.y > portal2->z && newpos.y < portal2->z + portal.height) {
-			printf("Teleported to portal 1\n");
-			portal.Teleport(&newpos, 1);
-			break;
+	if (!ignore_portals) {
+		for (Portal& portal : scene->portals) {
+			Linedef* portal1 = &portal.sectors[0];
+			Linedef* portal2 = &portal.sectors[1];
+			if (CheckCollisionLines(portal1->start, portal1->end, { oldpos.x, oldpos.z }, { newpos.x, newpos.z }, nullptr) && newpos.y > portal1->z && newpos.y < portal1->z + portal.height) {
+				//printf("Teleported to portal 2\n");
+				portal.Teleport(&newpos, 2);
+				break;
+			}
+			if (CheckCollisionLines(portal2->start, portal2->end, { oldpos.x, oldpos.z }, { newpos.x, newpos.z }, nullptr) && newpos.y > portal2->z && newpos.y < portal2->z + portal.height) {
+				//printf("Teleported to portal 1\n");
+				portal.Teleport(&newpos, 1);
+				break;
+			}
 		}
 	}
 

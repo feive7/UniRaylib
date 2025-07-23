@@ -9,7 +9,7 @@
 #include "Lighting.h"
 #include "MapElements.h"
 #include "Player.h"
-#include "testmap.h"
+#include "maps/testmap.h"
 #define MAP testmap
 void DrawPortalNormals(Portal* portal) {
     for (int i = 0; i < 2; i++) {
@@ -18,9 +18,16 @@ void DrawPortalNormals(Portal* portal) {
         DrawLine3D(origin, origin + Vector3{normal.x, 0.0f, normal.y}, RED);
     }
 }
+void DrawPlayer(Player* player) {
+    Vector3 headpos = Vector3Add(player->position, { 0.0f,player->height,0.0f });
+    Vector3 aboveFloor = Vector3Add(player->position, { 0.0f,0.01f,0.0f });
+    Vector3 facing = player->facing(); facing.y = 0.0f; facing = Vector3Normalize(facing);
+    DrawCapsule(player->position, headpos, player->radius, 10, 10, RED);
+    DrawLine3D(aboveFloor, Vector3Add(aboveFloor, Vector3Scale(facing, 2.0f*player->radius)), BLUE);
+}
 void ResetCamera(Camera* camera) {
-    camera->position = MAP.playerstart.position;  // Camera position
-    camera->target = MAP.playerstart.target;     // Camera looking at point
+    camera->position = MAP.playerstart.camera_position;  // Camera position
+    camera->target = MAP.playerstart.camera_target;     // Camera looking at point
     camera->up = { 0.0f, 1.0f, 0.0f };         // Camera up vector (rotation towards target)
     camera->fovy = 45.0f;                      // Camera field-of-view Y
     camera->projection = CAMERA_PERSPECTIVE;   // Camera mode type
@@ -33,7 +40,6 @@ int main(void) {
 
     InitTextures();
     InitShaders();
-    InitTestMap();
     MAP.portals[0].InitPortals();
 
     Light playerlight = CreateLight({ 0.0f,0.0f,0.0f }, 2.0f);
@@ -41,6 +47,13 @@ int main(void) {
 
     Camera freecam = { 0 };
     ResetCamera(&freecam);
+    freecam.up = { 0.0f,1.0f,0.0f };
+
+    Player player;
+    player.position = MAP.playerstart.player_position;
+    player.target = MAP.playerstart.player_target;
+    player.height = 2.0f;
+    player.radius = 1.0f;
 
     DisableCursor();
     SetTargetFPS(60);
@@ -53,6 +66,11 @@ int main(void) {
 
         // Game logic
         UpdateCameraScene(&freecam,&MAP);
+        if (IsKeyDown(KEY_W)) player.move({ 0.0f,0.0f,0.1f }, &MAP);
+        if (IsKeyDown(KEY_A)) player.move({ -0.1f,0.0f,0.0f }, &MAP);
+        if (IsKeyDown(KEY_S)) player.move({ 0.0f,0.0f,-0.1f }, &MAP);
+        if (IsKeyDown(KEY_D)) player.move({ 0.1f,0.0f,0.0f }, &MAP);
+        if (!IsKeyDown(KEY_TAB)) player.attachCamera(&freecam);
         MAP.renderPortals(&freecam);
         playerlight.position = freecam.position;
         UpdateLight(playerlight);
@@ -62,12 +80,13 @@ int main(void) {
             BeginMode3D(freecam);
                 MAP.draw();
                 MAP.draw_portals();
-                //DrawPortalNormals(&MAP.portals[0]);
+                DrawPlayer(&player);
             EndMode3D();
-            if (IsKeyDown(KEY_TAB)) {
-                Texture* texture = &MAP.portals[0].RTextures[1].texture;
-                DrawTextureRec(*texture, { 0,0,(float)texture->width,(float)-texture->height }, { 0,0 }, WHITE);
-            }
+            Vector3 t = player.facing();
+            DrawText(TextFormat("Camera Position: %.2f %.2f %.2f", freecam.position.x, freecam.position.y, freecam.position.z), 0, 10, 20, WHITE);
+            DrawText(TextFormat("Camera Target: %.2f %.2f %.2f", freecam.target.x, freecam.target.y, freecam.target.z), 0, 30, 20, WHITE);
+            DrawText(TextFormat("Player Position: %.2f %.2f %.2f", player.position.x, player.position.y, player.position.z), 0, 50, 20, WHITE);
+            DrawText(TextFormat("Player Facing: %.2f %.2f %.2f", t.x, t.y, t.z), 0, 70, 20, WHITE);
         EndDrawing();
     }
     UnloadTextures();
