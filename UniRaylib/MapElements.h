@@ -1,13 +1,27 @@
 #include <vector>
+struct Playerstart {
+	Vector3 position;
+	Vector3 target;
+};
 class Linedef {
 public:
 	Vector2 start;
 	Vector2 end;
 	float z;
+	Vector2 getMidpointXZ() {
+		return Vector2Scale(start + end, 0.5f);
+	}
 	Vector3 getMidpoint() {
 		Vector3 start3D = { start.x,z,start.y };
 		Vector3 end3D = { end.x,z,end.y };
-		return Vector3Scale(end3D + start3D, 0.5);
+		return Vector3Scale(end3D + start3D, 0.5f);
+	}
+	Vector2 getDirection() {
+		return Vector2Normalize({ end.x - start.x,end.y - start.y });
+	}
+	Vector2 getNormal() {
+		Vector2 dir = getDirection();
+		return { -dir.y,dir.x };
 	}
 };
 class Wall {
@@ -47,19 +61,59 @@ public:
 		return sectors[1].getMidpoint() - sectors[0].getMidpoint();
 	}
 	void updatePerspective(Camera* playercam) {
-		RTCameras[0].position = playercam->position + offset();
-		RTCameras[0].target = playercam->target + offset();
+		for (int from = 0; from < 2; from++) {
+			int to = 1 - from;
 
-		RTCameras[1].position = playercam->position - offset();
-		RTCameras[1].target = playercam->target - offset();
+			// Get midpoints
+			Vector3 fromMid = sectors[from].getMidpoint();
+			Vector3 toMid = sectors[to].getMidpoint();
+
+			// Get 2D directions
+			Vector2 fromDir2D = sectors[from].getDirection();
+			Vector2 toDir2D = sectors[to].getDirection();
+
+			// Calculate angle difference
+			float angleFrom = atan2f(fromDir2D.y, fromDir2D.x);
+			float angleTo = atan2f(toDir2D.y, toDir2D.x);
+			float deltaAngle = angleTo - angleFrom + PI; // +PI flips view for "looking through" portal
+
+			// Relative position and direction to source portal
+			Vector3 localPos = playercam->position - fromMid;
+			Vector3 localTargetOffset = playercam->target - playercam->position;
+
+			// Rotate around Y axis
+			Vector3 rotatedPos = Vector3RotateByAxisAngle(localPos, { 0, 1, 0 }, deltaAngle);
+			Vector3 rotatedTargetOffset = Vector3RotateByAxisAngle(localTargetOffset, { 0, 1, 0 }, deltaAngle);
+
+			// Update camera
+			RTCameras[from].position = toMid + rotatedPos;
+			RTCameras[from].target = RTCameras[from].position + rotatedTargetOffset;
+			RTCameras[from].up = playercam->up;
+		}
 	}
-	void draw() {
+
+	void Teleport(Vector3* pos, int to) {
+		if (to == 2) {
+			*pos += offset();
+		}
+		else if (to == 1) {
+			*pos -= offset();
+		}
+	}
+
+
+	void draw(bool debug_mode = false) {
 		BeginShaderMode(shader_window);
 		rlBegin(RL_QUADS);
 		for (int i = 0; i < 2; i++) {
 			Linedef* l = &sectors[i];
-			rlColor4ub(255, 255, 255, 255);
-			rlSetTexture(RTextures[i].texture.id);
+			if (debug_mode) {
+				if (i == 0) rlColor4ub(255, 100, 100, 255);
+				else rlColor4ub(100, 100, 255, 255);
+			}
+			else {
+				rlSetTexture(RTextures[i].texture.id);
+			}
 			rlTexCoord2f(0.0f, 0.0f); rlVertex3f(l->start.x, l->z, l->start.y);
 			rlTexCoord2f(1.0f, 0.0f); rlVertex3f(l->end.x, l->z, l->end.y);
 			rlTexCoord2f(1.0f, 1.0f); rlVertex3f(l->end.x, l->z + height, l->end.y);
@@ -76,6 +130,7 @@ public:
 };
 class GameMap {
 public:
+	Playerstart playerstart;
 	std::vector<Wall> walls;
 	std::vector<Portal> portals;
 	void draw() {
