@@ -6,6 +6,7 @@ Texture tex_woodfloor;
 Texture tex_concretewall;
 Texture tex_brick;
 Texture tex_stone;
+Texture tex_lava;
 Texture tex_error;
 void InitTextures() {
 	tex_scifi_floortile = LoadTexture("assets/textures/tex_scifi_floortile.jpg");
@@ -16,6 +17,7 @@ void InitTextures() {
 	tex_concretewall = LoadTexture("assets/textures/tex_concretewall.jpg");
 	tex_brick = LoadTexture("assets/textures/tex_brick.jpg");
 	tex_stone = LoadTexture("assets/textures/tex_stone.jpg");
+	tex_lava = LoadTexture("assets/textures/tex_lava.png");
 	tex_error = LoadTexture("assets/textures/tex_error.png");
 }
 void UnloadTextures() {
@@ -27,5 +29,6 @@ void UnloadTextures() {
 	UnloadTexture(tex_concretewall);
 	UnloadTexture(tex_brick);
 	UnloadTexture(tex_stone);
+	UnloadTexture(tex_lava);
 	UnloadTexture(tex_error);
 }

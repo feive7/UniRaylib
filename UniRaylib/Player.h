@@ -4,24 +4,19 @@ class Player {
 public:
 	Vector3 position;
 	Vector3 target;
+	Vector3 velocity;
 	float height;
 	float radius;
-	bool noClipping;
-	Camera* camera;
+	bool noClipping = false;
 	Vector3 facing() {
 		return Vector3Normalize(Vector3Subtract(target, position));
 	}
 	Vector3 headPos() {
 		return Vector3Add(position, { 0.0f,height,0.0f });
 	}
-	void move(Vector3 localMovement, GameMap* scene) {
-		Vector3 forward = facing(); forward.y = 0.0f; forward = Vector3Normalize(forward);
-		Vector3 right = { -forward.z,0.0f,forward.x };
-		Vector3 movement = Vector3Scale(forward, localMovement.z) + Vector3Scale(right, localMovement.x);
+	void tryMove(Vector3& newpos, GameMap* scene) {
 		Vector3 oldpos = position;
-		Vector3 newpos = position + movement;
-		Vector3 collisionpos = newpos + Vector3Scale(Vector3Normalize(movement), radius);
-		if (noClipping) {
+		if (!noClipping) {
 			for (Wall& wall : scene->walls) {
 				for (int i = 0; i < 4; i++) {
 					Vector2 A = wall.points[i];
@@ -30,7 +25,8 @@ public:
 					float distance = line.lineDistance({ newpos.x,newpos.z });
 					if (distance < radius) {
 						Vector2 normal = line.getNormal();
-						Vector2 pushback = Vector2Scale(normal, radius - distance);
+						float side = line.lineSide({ newpos.x,newpos.z });
+						Vector2 pushback = Vector2Scale(normal, side * (radius - distance));
 
 						newpos.x -= pushback.x;
 						newpos.z -= pushback.y;
@@ -52,6 +48,14 @@ public:
 				break;
 			}
 		}
+	}
+	void move(Vector3 localMovement, GameMap* scene) {
+		Vector3 forward = facing(); forward.y = 0.0f; forward = Vector3Normalize(forward);
+		Vector3 right = { -forward.z,0.0f,forward.x };
+		Vector3 movement = Vector3Scale(forward, localMovement.z) + Vector3Scale(right, localMovement.x);
+		Vector3 oldpos = position;
+		Vector3 newpos = position + movement;
+		tryMove(newpos, scene);
 		position = newpos;
 		target = position + forward;
 	}
@@ -62,6 +66,16 @@ public:
 			camera->target = camera->position + camforward;
 			target = camera->position + camforward;
 		}
+	}
+	void update(GameMap* scene) {
+		Vector3 movement = { IsKeyDown(KEY_D) - IsKeyDown(KEY_A),0.0f,IsKeyDown(KEY_W) - IsKeyDown(KEY_S) };
+
+		float speed = 0.2f;
+		if (IsKeyDown(KEY_LEFT_SHIFT)) speed = 0.5f;
+		if (IsKeyDown(KEY_LEFT_CONTROL)) speed = 0.08f;
+
+		movement = Vector3Scale(movement, speed);
+		move(movement, scene);
 	}
 };
 void UpdateCameraScene(Camera* sceneCamera, GameMap* scene, bool move = false, bool ignore_portals = false) {

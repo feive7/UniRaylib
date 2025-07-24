@@ -142,6 +142,7 @@
   <ItemGroup>
     <ClInclude Include="Lighting.h" />
     <ClInclude Include="MapElements.h" />
+    <ClInclude Include="maps\testmap.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="Textures.h" />

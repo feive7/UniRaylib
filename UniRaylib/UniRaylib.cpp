@@ -32,6 +32,12 @@ void ResetCamera(Camera* camera) {
     camera->fovy = 45.0f;                      // Camera field-of-view Y
     camera->projection = CAMERA_PERSPECTIVE;   // Camera mode type
 }
+void ResetPlayer(Player* player) {
+    player->position = MAP.playerstart.player_position;
+    player->target = MAP.playerstart.player_target;
+    player->height = 3.0f;
+    player->radius = 1.0f;
+}
 int main(void) {
     const int screenWidth = 800;
     const int screenHeight = 450;
@@ -40,20 +46,13 @@ int main(void) {
 
     InitTextures();
     InitShaders();
-    MAP.portals[0].InitPortals();
-
-    Light playerlight = CreateLight({ 0.0f,0.0f,0.0f }, 2.0f);
-    LightPortal lightPortal = CreateLightPortal({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,24.0f });
+    MAP.init();
 
     Camera freecam = { 0 };
     ResetCamera(&freecam);
-    freecam.up = { 0.0f,1.0f,0.0f };
 
-    Player player;
-    player.position = MAP.playerstart.player_position;
-    player.target = MAP.playerstart.player_target;
-    player.height = 2.0f;
-    player.radius = 1.0f;
+    Player player = { 0 };
+    ResetPlayer(&player);
 
     DisableCursor();
     SetTargetFPS(60);
@@ -61,20 +60,21 @@ int main(void) {
     while (!WindowShouldClose()) {
         // Keyboard input handling
         if (IsKeyDown(KEY_R)) {
+            ResetPlayer(&player);
             ResetCamera(&freecam);
         }
 
         // Game logic
         UpdateCameraScene(&freecam,&MAP);
-        if (IsKeyDown(KEY_W)) player.move({ 0.0f,0.0f,0.1f }, &MAP);
-        if (IsKeyDown(KEY_A)) player.move({ -0.1f,0.0f,0.0f }, &MAP);
-        if (IsKeyDown(KEY_S)) player.move({ 0.0f,0.0f,-0.1f }, &MAP);
-        if (IsKeyDown(KEY_D)) player.move({ 0.1f,0.0f,0.0f }, &MAP);
+        player.update(&MAP);
         if (IsKeyPressed(KEY_V)) player.noClipping = !player.noClipping;
         if (!IsKeyDown(KEY_TAB)) player.attachCamera(&freecam);
         MAP.renderPortals(&freecam);
-        playerlight.position = freecam.position;
-        UpdateLight(playerlight);
+        float time = GetTime();
+        testmap.lights[0].position = { sin(time)*4,3.0f,cos(time)*4 };
+        for (int i = 0; i < 1; i++) {
+            UpdateLight(testmap.lights[i]);
+        }
 
         BeginDrawing();
             ClearBackground(BLACK); // Clear the background
@@ -84,10 +84,10 @@ int main(void) {
                 DrawPlayer(&player);
             EndMode3D();
             Vector3 t = player.facing();
-            DrawText(TextFormat("Camera Position: %.2f %.2f %.2f", freecam.position.x, freecam.position.y, freecam.position.z), 0, 10, 20, WHITE);
+            /*DrawText(TextFormat("Camera Position: %.2f %.2f %.2f", freecam.position.x, freecam.position.y, freecam.position.z), 0, 10, 20, WHITE);
             DrawText(TextFormat("Camera Target: %.2f %.2f %.2f", freecam.target.x, freecam.target.y, freecam.target.z), 0, 30, 20, WHITE);
             DrawText(TextFormat("Player Position: %.2f %.2f %.2f", player.position.x, player.position.y, player.position.z), 0, 50, 20, WHITE);
-            DrawText(TextFormat("Player Facing: %.2f %.2f %.2f", t.x, t.y, t.z), 0, 70, 20, WHITE);
+            DrawText(TextFormat("Player Facing: %.2f %.2f %.2f", t.x, t.y, t.z), 0, 70, 20, WHITE);*/
         EndDrawing();
     }
     UnloadTextures();

@@ -1,9 +1,11 @@
 struct Light {
 	Vector3 position;
 	float power;
+	Vector3 color;
 
 	int position_loc;
 	int power_loc;
+	int color_loc;
 };
 struct LightPortal {
 	Vector3 pos1;
@@ -19,17 +21,20 @@ static int lightPortalsCount = 0;
 void UpdateLight(Light light) {
 	SetShaderValue(shader_lighting, light.position_loc, &light.position, SHADER_UNIFORM_VEC3);
 	SetShaderValue(shader_lighting, light.power_loc, &light.power, SHADER_UNIFORM_FLOAT);
+	SetShaderValue(shader_lighting, light.color_loc, &light.color, SHADER_UNIFORM_VEC3);
 }
 void UpdateLightPortal(LightPortal lp) {
 	SetShaderValue(shader_lighting, lp.pos1_loc, &lp.pos1, SHADER_UNIFORM_VEC3);
 	SetShaderValue(shader_lighting, lp.pos2_loc, &lp.pos2, SHADER_UNIFORM_VEC3);
 }
-Light CreateLight(Vector3 position, float power) {
+Light CreateLight(Vector3 position, float power, Vector3 color) {
 	Light light = { 0 };
 	light.position = position;
 	light.power = power;
+	light.color = color;
 	light.position_loc = GetShaderLocation(shader_lighting, TextFormat("lights[%i].position", lightsCount));
 	light.power_loc = GetShaderLocation(shader_lighting, TextFormat("lights[%i].power", lightsCount));
+	light.color_loc = GetShaderLocation(shader_lighting, TextFormat("lights[%i].color", lightsCount));
 	lightsCount++;
 	UpdateLight(light);
 	return light;

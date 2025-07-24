@@ -23,9 +23,6 @@
     <ClInclude Include="MapElements.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="testmap.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Textures.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -33,6 +30,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lighting.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="maps\testmap.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

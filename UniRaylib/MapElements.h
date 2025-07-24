@@ -38,6 +38,15 @@ public:
 		Vector2 projection = Vector2Add(start, Vector2Scale(ab, t));
 		return Vector2Distance(p, projection);
 	}
+	float lineSide(Vector2 p) {
+		float d = (p.x - start.x) * (end.y - start.y) - (p.y - start.y) * (end.x - start.x);
+		if (d == 0)
+			return 0.0f;
+		if (d < 0)
+			return -1.0f;
+		if (d > 0)
+			return 1.0f;
+	}
 	bool CheckCollisionLine(Vector2 start, Vector2 end) {
 		return CheckCollisionLines(this->start, this->end, start, end, nullptr);
 	}
@@ -151,6 +160,7 @@ public:
 	Playerstart playerstart;
 	std::vector<Wall> walls;
 	std::vector<Portal> portals;
+	std::vector<Light> lights;
 	void draw() {
 		for (Wall& wall : walls) {
 			Vector2* points = wall.points;
@@ -160,6 +170,7 @@ public:
 			rlColor4ub(wall.tint.r,wall.tint.g,wall.tint.b,wall.tint.a);
 			rlSetTexture(wall.texture->id);
 
+			rlNormal3f(0.0f, -1.0f, 0.0f);
 			rlTexCoord2f(0.0f, 0.0f); rlVertex3f(points[0].x, wall.z, points[0].y);
 			rlTexCoord2f(1.0f, 0.0f); rlVertex3f(points[1].x, wall.z, points[1].y);
 			rlTexCoord2f(1.0f, 1.0f); rlVertex3f(points[2].x, wall.z, points[2].y);
@@ -169,6 +180,7 @@ public:
 			rlTexCoord2f(1.0f, 0.0f); rlVertex3f(points[1].x, wall.z, points[1].y);
 			rlTexCoord2f(0.0f, 0.0f); rlVertex3f(points[0].x, wall.z, points[0].y);
 
+			rlNormal3f(0.0f, 1.0f, 0.0f);
 			rlTexCoord2f(0.0f, 0.0f); rlVertex3f(points[0].x, wall.z + wall.height, points[0].y);
 			rlTexCoord2f(1.0f, 0.0f); rlVertex3f(points[1].x, wall.z + wall.height, points[1].y);
 			rlTexCoord2f(1.0f, 1.0f); rlVertex3f(points[2].x, wall.z + wall.height, points[2].y);
@@ -179,14 +191,19 @@ public:
 			rlTexCoord2f(0.0f, 0.0f); rlVertex3f(points[0].x, wall.z + wall.height, points[0].y);
 
 			for (int i = 0; i < 4; i++) {
-				rlTexCoord2f(0.0f, 0.0f); rlVertex3f(points[i].x, wall.z, points[i].y);
-				rlTexCoord2f(1.0f, 0.0f); rlVertex3f(points[(i+1)%4].x, wall.z, points[(i+1)%4].y);
-				rlTexCoord2f(1.0f, 1.0f); rlVertex3f(points[(i+1)%4].x, wall.z + wall.height, points[(i+1)%4].y);
-				rlTexCoord2f(0.0f, 1.0f); rlVertex3f(points[i].x, wall.z + wall.height, points[i].y);
-				rlTexCoord2f(0.0f, 1.0f); rlVertex3f(points[i].x, wall.z + wall.height, points[i].y);
-				rlTexCoord2f(1.0f, 1.0f); rlVertex3f(points[(i+1)%4].x, wall.z + wall.height, points[(i+1)%4].y);
-				rlTexCoord2f(1.0f, 0.0f); rlVertex3f(points[(i+1)%4].x, wall.z, points[(i+1)%4].y);
-				rlTexCoord2f(0.0f, 0.0f); rlVertex3f(points[i].x, wall.z, points[i].y);
+				Vector2 p1 = points[i];
+				Vector2 p2 = points[(i + 1) % 4];
+				Vector2 direction = (p2 - p1);
+				Vector2 normal = Vector2Normalize({ -direction.y,direction.x });
+				rlNormal3f(normal.x, 0.0f, normal.y);
+				rlTexCoord2f(0.0f, 0.0f); rlVertex3f(p1.x, wall.z, p1.y);
+				rlTexCoord2f(1.0f, 0.0f); rlVertex3f(p2.x, wall.z, p2.y);
+				rlTexCoord2f(1.0f, 1.0f); rlVertex3f(p2.x, wall.z + wall.height, p2.y);
+				rlTexCoord2f(0.0f, 1.0f); rlVertex3f(p1.x, wall.z + wall.height, p1.y);
+				rlTexCoord2f(0.0f, 1.0f); rlVertex3f(p1.x, wall.z + wall.height, p1.y);
+				rlTexCoord2f(1.0f, 1.0f); rlVertex3f(p2.x, wall.z + wall.height, p2.y);
+				rlTexCoord2f(1.0f, 0.0f); rlVertex3f(p2.x, wall.z, p2.y);
+				rlTexCoord2f(0.0f, 0.0f); rlVertex3f(p1.x, wall.z, p1.y);
 			}
 
 			rlEnd();
@@ -209,6 +226,14 @@ public:
 				EndMode3D();
 				EndTextureMode();
 			}
+		}
+	}
+	void init() {
+		for (Portal& portal : portals) {
+			portal.InitPortals();
+		}
+		for (Light& light : lights) {
+			light = CreateLight(light.position, light.power, light.color);
 		}
 	}
 };
