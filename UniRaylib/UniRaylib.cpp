@@ -70,18 +70,16 @@ int main(void) {
         if (IsKeyPressed(KEY_V)) player.noClipping = !player.noClipping;
         if (!IsKeyDown(KEY_TAB)) player.attachCamera(&freecam);
         MAP.renderPortals(&freecam);
-        float time = GetTime();
-        testmap.lights[0].position = { sin(time)*4,3.0f,cos(time)*4 };
-        for (int i = 0; i < 1; i++) {
-            UpdateLight(testmap.lights[i]);
-        }
-
+        
         BeginDrawing();
             ClearBackground(BLACK); // Clear the background
             BeginMode3D(freecam);
                 MAP.draw();
                 MAP.draw_portals();
                 DrawPlayer(&player);
+                for (int i = 0; i < MAP.lights.size(); i++) {
+                    DrawBillboard(freecam, icon_lightbulb, MAP.lights[i].position, 1.0f, WHITE);
+                }
             EndMode3D();
             Vector3 t = player.facing();
             /*DrawText(TextFormat("Camera Position: %.2f %.2f %.2f", freecam.position.x, freecam.position.y, freecam.position.z), 0, 10, 20, WHITE);

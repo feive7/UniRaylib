@@ -8,6 +8,9 @@ Texture tex_brick;
 Texture tex_stone;
 Texture tex_lava;
 Texture tex_error;
+
+Texture icon_lightbulb;
+
 void InitTextures() {
 	tex_scifi_floortile = LoadTexture("assets/textures/tex_scifi_floortile.jpg");
 	tex_crate_c = LoadTexture("assets/textures/tex_crate_c.png");
@@ -19,6 +22,8 @@ void InitTextures() {
 	tex_stone = LoadTexture("assets/textures/tex_stone.jpg");
 	tex_lava = LoadTexture("assets/textures/tex_lava.png");
 	tex_error = LoadTexture("assets/textures/tex_error.png");
+
+	icon_lightbulb = LoadTexture("assets/textures/icon_lightbulb.png");
 }
 void UnloadTextures() {
 	UnloadTexture(tex_scifi_floortile);
@@ -31,4 +36,6 @@ void UnloadTextures() {
 	UnloadTexture(tex_stone);
 	UnloadTexture(tex_lava);
 	UnloadTexture(tex_error);
+
+	UnloadTexture(icon_lightbulb);
 }

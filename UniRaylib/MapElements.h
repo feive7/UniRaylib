@@ -5,6 +5,16 @@ struct Playerstart {
 	Vector3 camera_position;
 	Vector3 camera_target;
 };
+class Billboard {
+public:
+	Vector3 position;
+	float scale;
+	Texture* texture;
+	Color tint;
+	void draw(Camera* cam) {
+		DrawBillboard(*cam, *texture, position, scale, tint);
+	}
+};
 class Linedef {
 public:
 	Vector2 start;
