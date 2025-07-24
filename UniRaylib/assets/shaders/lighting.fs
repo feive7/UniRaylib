@@ -19,6 +19,7 @@ struct Light {
 // Input uniform values
 uniform sampler2D texture0;
 uniform vec4 colDiffuse;
+uniform float ambientLight;
 uniform Light lights[10];
 uniform LightPortal lightPortals[10];
 
@@ -56,6 +57,7 @@ void main() {
         //lighting += (light.power / Vec3Distance(light.position + offset, fragPosition));
         //lighting += (light.power / Vec3Distance(light.position - offset, fragPosition));
     }
+    lighting = max(vec3(ambientLight,ambientLight,ambientLight),lighting);
     finalColor = texelColor*colDiffuse*fragColor;
     finalColor.rgb *= lighting;
 }

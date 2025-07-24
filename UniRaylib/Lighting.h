@@ -17,6 +17,7 @@ struct LightPortal {
 
 static int lightsCount = 0;
 static int lightPortalsCount = 0;
+static int ambientLight_loc;
 
 void UpdateLight(Light light) {
 	SetShaderValue(shader_lighting, light.position_loc, &light.position, SHADER_UNIFORM_VEC3);
@@ -48,4 +49,9 @@ LightPortal CreateLightPortal(Vector3 pos1, Vector3 pos2) {
 	lightPortalsCount++;
 	UpdateLightPortal(lp); 
 	return lp;
+}
+void SetAmbientLight(float lightness) {
+	if (!ambientLight_loc)
+		ambientLight_loc = GetShaderLocation(shader_lighting, "ambientLight");
+	SetShaderValue(shader_lighting, ambientLight_loc, &lightness, SHADER_UNIFORM_FLOAT);
 }

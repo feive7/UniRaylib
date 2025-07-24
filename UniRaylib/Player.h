@@ -14,8 +14,9 @@ public:
 	Vector3 headPos() {
 		return Vector3Add(position, { 0.0f,height,0.0f });
 	}
-	void tryMove(Vector3& newpos, GameMap* scene) {
+	Vector3 tryMove(Vector3& wishvel, GameMap* scene) {
 		Vector3 oldpos = position;
+		Vector3 newpos = position + wishvel;
 		if (!noClipping) {
 			for (Wall& wall : scene->walls) {
 				for (int i = 0; i < 4; i++) {
@@ -23,10 +24,13 @@ public:
 					Vector2 B = wall.points[(i + 1) % 4];
 					Linedef line = { A,B };
 					float distance = line.lineDistance({ newpos.x,newpos.z });
-					if (distance < radius) {
+					if (distance < radius && newpos.y < wall.z + wall.height) {
 						Vector2 normal = line.getNormal();
 						float side = line.lineSide({ newpos.x,newpos.z });
 						Vector2 pushback = Vector2Scale(normal, side * (radius - distance));
+
+						wishvel.x -= pushback.x;
+						wishvel.z -= pushback.y;
 
 						newpos.x -= pushback.x;
 						newpos.z -= pushback.y;
@@ -48,15 +52,31 @@ public:
 				break;
 			}
 		}
+		return newpos;
+	}
+	void accelerate(Vector3 wishdir, float wishspeed, float accel) {
+		float currentspeed = Vector3DotProduct(velocity, wishdir);
+		float addspeed = wishspeed - currentspeed;
+		if (addspeed <= 0.0f) return; // No accelerat
+		float accelspeed = accel * GetFrameTime() * wishspeed;
+		if (accelspeed > addspeed) accelspeed = addspeed; // Limit acceleration
+		Vector3 addendum = wishdir * accelspeed;
+		velocity.x += addendum.x;
+		velocity.z += addendum.z;
 	}
 	void move(Vector3 localMovement, GameMap* scene) {
 		Vector3 forward = facing(); forward.y = 0.0f; forward = Vector3Normalize(forward);
 		Vector3 right = { -forward.z,0.0f,forward.x };
-		Vector3 movement = Vector3Scale(forward, localMovement.z) + Vector3Scale(right, localMovement.x);
-		Vector3 oldpos = position;
-		Vector3 newpos = position + movement;
-		tryMove(newpos, scene);
-		position = newpos;
+		
+		Vector3 wishvel = Vector3Scale(forward, localMovement.z) + Vector3Scale(right, localMovement.x);
+		Vector3 wishdir = Vector3Normalize(wishvel);
+		float wishspeed = Vector3Length(wishvel);
+		accelerate(wishdir, wishspeed, 8.0f);
+		if (wishspeed == 0.0f) {
+			velocity = Vector3Scale(velocity, 0.9);
+		}
+		position = tryMove(velocity, scene);
+
 		target = position + forward;
 	}
 	void attachCamera(Camera* camera, int mode = 1) {

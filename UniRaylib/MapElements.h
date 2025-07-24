@@ -170,6 +170,7 @@ public:
 	Playerstart playerstart;
 	std::vector<Wall> walls;
 	std::vector<Portal> portals;
+	float ambientLight;
 	std::vector<Light> lights;
 	void draw() {
 		for (Wall& wall : walls) {
@@ -245,5 +246,6 @@ public:
 		for (Light& light : lights) {
 			light = CreateLight(light.position, light.power, light.color);
 		}
+		SetAmbientLight(ambientLight);
 	}
 };
