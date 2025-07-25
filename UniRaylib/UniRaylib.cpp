@@ -12,7 +12,7 @@
 #include "Player.h"
 #include "maps/testmap.h"
 #define MAP testmap
-bool debug = false;
+bool debug = true;
 void DrawPortalNormals(Portal* portal) {
     for (int i = 0; i < 2; i++) {
         Vector3 origin = Vector3Add(portal->sectors[i].getMidpoint(), { 0.0f,portal->height / 2.0f,0.0f });
@@ -26,6 +26,9 @@ void DrawPlayer(Player* player) {
     Vector3 facing = player->facing(); facing.y = 0.0f; facing = Vector3Normalize(facing);
     DrawCapsule(player->position, headpos, player->radius, 10, 10, RED);
     DrawLine3D(aboveFloor, Vector3Add(aboveFloor, Vector3Scale(facing, 2.0f*player->radius)), BLUE);
+    DrawCircle3D(player->position, player->radius, { 1.0f, 0.0f, 0.0f }, 90.0f, GRAY); // Draw player as a circle on the ground
+    DrawCircle3D(player->position + Vector3{ 0.0f,player->height,0.0f }, player->radius, { 1.0f, 0.0f, 0.0f }, 90.0f, GRAY);
+
 }
 void ResetCamera(Camera* camera) {
     camera->position = MAP.playerstart.camera_position;  // Camera position
@@ -98,6 +101,8 @@ int main(void) {
             Vector3 t = player.facing();
             if (debug) {
                 AddLine(TextFormat("Player Position: %.2f %.2f %.2f", player.position.x, player.position.y, player.position.z), true);
+                AddLine(TextFormat("Player OnGround: %i", player.onGround));
+                AddLine(TextFormat("Player Clip: %i", player.position.y < 1.0f));
             }
         EndDrawing();
     }

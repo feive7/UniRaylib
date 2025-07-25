@@ -28,7 +28,7 @@ public:
 					Vector2 B = wall.points[(i + 1) % 4];
 					Linedef line = { A,B };
 					float distance = line.lineDistance({ newpos.x,newpos.z });
-					if (distance < radius && newpos.y < wall.z + wall.height && newpos.y + height > wall.z) {
+					if (distance < radius && oldpos.y < wall.z + wall.height && oldpos.y + height > wall.z) {
 						Vector2 normal = line.getNormal();
 						float side = line.lineSide({ newpos.x,newpos.z });
 						Vector2 pushback = Vector2Scale(normal, side * (radius - distance));
@@ -48,7 +48,7 @@ public:
 						grounded = true;
 						newpos.y = wall.z + wall.height;
 					}
-					else if (newpos.y + height > wall.z && newpos.y < wall.z) {
+					else if (newpos.y + height > wall.z && newpos.y + height < wall.z + 1.0f) {
 						velocity.y = 0.0f;
 						newpos.y = wall.z - height;
 					}

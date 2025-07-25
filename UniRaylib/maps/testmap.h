@@ -9,8 +9,8 @@ GameMap testmap = {
 		{{{-6.0f,18.0f},{6.0f,18.0f},{6.0f,8.0f},{-6.0f,8.0f}},4.0f,6.0f,&tex_concretewall,WHITE,&shader_lighting}, // concretewall.005
 		{{{6.0f,18.0f},{18.0f,18.0f},{18.0f,8.0f},{6.0f,8.0f}},8.0f,2.0f,&tex_concretewall,WHITE,&shader_lighting}, // concretewall.014
 		{{{20.0f,18.0f},{32.0f,18.0f},{32.0f,8.0f},{20.0f,8.0f}},8.0f,2.0f,&tex_concretewall,WHITE,&shader_lighting}, // concretewall.024
+		{{{9.0f,1.0f},{11.0f,1.0f},{11.0f,-1.0f},{9.0f,-1.0f}},-1.0f,2.0f,&tex_grass,WHITE,&shader_lighting}, // grass
 		{{{6.0f,-6.0f},{18.0f,-6.0f},{18.0f,-8.0f},{6.0f,-8.0f}},0.0f,10.0f,&tex_rockwall,WHITE,&shader_lighting}, // rockwall.013
-		{{{6.0f,1.0f},{18.0f,1.0f},{18.0f,-1.0f},{6.0f,-1.0f}},3.0f,10.0f,&tex_rockwall,WHITE,&shader_lighting}, // rockwall.014
 		{{{6.0f,18.0f},{-6.0f,18.0f},{-6.0f,20.0f},{6.0f,20.0f}},0.0f,8.0f,&tex_stone,WHITE,&shader_lighting}, // stone.001
 		{{{-6.0f,-6.0f},{6.0f,-6.0f},{6.0f,-8.0f},{-6.0f,-8.0f}},0.0f,10.0f,&tex_stone,WHITE,&shader_lighting}, // stone.002
 		{{{-6.0f,6.0f},{-6.0f,-6.0f},{-8.0f,-6.0f},{-8.0f,6.0f}},-0.0f,10.0f,&tex_stone,WHITE,&shader_lighting}, // stone.003
