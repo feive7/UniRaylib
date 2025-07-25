@@ -1,5 +1,6 @@
 #define MOUSE_SENSITIVITY 100
 #define CAMERA_MODE_FIRST_PERSON 1
+#define GRAVITY 2.0f
 class Player {
 public:
 	Vector3 position;
@@ -7,24 +8,27 @@ public:
 	Vector3 velocity;
 	float height;
 	float radius;
+	bool onGround = false;
 	bool noClipping = false;
 	Vector3 facing() {
 		return Vector3Normalize(Vector3Subtract(target, position));
 	}
 	Vector3 headPos() {
-		return Vector3Add(position, { 0.0f,height,0.0f });
+		return Vector3Add(position, { 0.0f,height - 1.0f,0.0f });
 	}
 	Vector3 tryMove(Vector3& wishvel, GameMap* scene) {
 		Vector3 oldpos = position;
 		Vector3 newpos = position + wishvel;
 		if (!noClipping) {
+			bool grounded = false;
+			bool touchingWall = false;
 			for (Wall& wall : scene->walls) {
 				for (int i = 0; i < 4; i++) {
 					Vector2 A = wall.points[i];
 					Vector2 B = wall.points[(i + 1) % 4];
 					Linedef line = { A,B };
 					float distance = line.lineDistance({ newpos.x,newpos.z });
-					if (distance < radius && newpos.y < wall.z + wall.height) {
+					if (distance < radius && newpos.y < wall.z + wall.height && newpos.y + height > wall.z) {
 						Vector2 normal = line.getNormal();
 						float side = line.lineSide({ newpos.x,newpos.z });
 						Vector2 pushback = Vector2Scale(normal, side * (radius - distance));
@@ -34,9 +38,23 @@ public:
 
 						newpos.x -= pushback.x;
 						newpos.z -= pushback.y;
+
+						touchingWall = true;
+					}
+				}
+				Vector2* p = wall.points;
+				if (CheckCollisionCircleQuad({ newpos.x,newpos.z }, radius, p[0], p[1], p[2], p[3])) {
+					if (newpos.y <= wall.z + wall.height && newpos.y > wall.z + wall.height - 1.0f) {
+						grounded = true;
+						newpos.y = wall.z + wall.height;
+					}
+					else if (newpos.y + height > wall.z && newpos.y < wall.z) {
+						velocity.y = 0.0f;
+						newpos.y = wall.z - height;
 					}
 				}
 			}
+			onGround = grounded;
 		}
 		for (Portal& portal : scene->portals) {
 			Linedef* portal1 = &portal.sectors[0];
@@ -69,11 +87,19 @@ public:
 		Vector3 right = { -forward.z,0.0f,forward.x };
 		
 		Vector3 wishvel = Vector3Scale(forward, localMovement.z) + Vector3Scale(right, localMovement.x);
-		Vector3 wishdir = Vector3Normalize(wishvel);
+		/*Vector3 wishdir = Vector3Normalize(wishvel);
 		float wishspeed = Vector3Length(wishvel);
 		accelerate(wishdir, wishspeed, 8.0f);
 		if (wishspeed == 0.0f) {
 			velocity = Vector3Scale(velocity, 0.9);
+		}*/
+		velocity.x = wishvel.x;
+		velocity.z = wishvel.z;
+		if (onGround) {
+			velocity.y = 0.0f;
+		}
+		else {
+			velocity.y -= GRAVITY * GetFrameTime();
 		}
 		position = tryMove(velocity, scene);
 
@@ -89,6 +115,10 @@ public:
 	}
 	void update(GameMap* scene) {
 		Vector3 movement = { IsKeyDown(KEY_D) - IsKeyDown(KEY_A),0.0f,IsKeyDown(KEY_W) - IsKeyDown(KEY_S) };
+		if (IsKeyDown(KEY_SPACE) && onGround) {
+			velocity.y += 0.5f;
+			onGround = false;
+		}
 
 		float speed = 0.2f;
 		if (IsKeyDown(KEY_LEFT_SHIFT)) speed = 0.5f;

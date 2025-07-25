@@ -4,6 +4,7 @@
 #include "rcamera.h"
 #include "raymath.h"
 #include "rlgl.h"
+#include "Extrafunctions.h"
 #include "Textures.h"
 #include "Shaders.h"
 #include "Lighting.h"
@@ -11,6 +12,7 @@
 #include "Player.h"
 #include "maps/testmap.h"
 #define MAP testmap
+bool debug = false;
 void DrawPortalNormals(Portal* portal) {
     for (int i = 0; i < 2; i++) {
         Vector3 origin = Vector3Add(portal->sectors[i].getMidpoint(), { 0.0f,portal->height / 2.0f,0.0f });
@@ -35,8 +37,17 @@ void ResetCamera(Camera* camera) {
 void ResetPlayer(Player* player) {
     player->position = MAP.playerstart.player_position;
     player->target = MAP.playerstart.player_target;
+    player->velocity = { 0.0f,0.0f,0.0f };
     player->height = 3.0f;
     player->radius = 1.0f;
+}
+void AddLine(const char* text, bool reset = false) {
+    static int y = 0;
+    if (reset) {
+        y = 0;
+    }
+    DrawText(text, 0, 20 * y + 10, 20, WHITE);
+    y++;
 }
 int main(void) {
     const int screenWidth = 800;
@@ -59,9 +70,12 @@ int main(void) {
 
     while (!WindowShouldClose()) {
         // Keyboard input handling
-        if (IsKeyDown(KEY_R)) {
+        if (IsKeyPressed(KEY_R)) {
             ResetPlayer(&player);
             ResetCamera(&freecam);
+        }
+        if (IsKeyPressed(KEY_F3)) {
+            toggle(debug);
         }
 
         // Game logic
@@ -82,10 +96,9 @@ int main(void) {
                 }
             EndMode3D();
             Vector3 t = player.facing();
-            /*DrawText(TextFormat("Camera Position: %.2f %.2f %.2f", freecam.position.x, freecam.position.y, freecam.position.z), 0, 10, 20, WHITE);
-            DrawText(TextFormat("Camera Target: %.2f %.2f %.2f", freecam.target.x, freecam.target.y, freecam.target.z), 0, 30, 20, WHITE);
-            DrawText(TextFormat("Player Position: %.2f %.2f %.2f", player.position.x, player.position.y, player.position.z), 0, 50, 20, WHITE);
-            DrawText(TextFormat("Player Facing: %.2f %.2f %.2f", t.x, t.y, t.z), 0, 70, 20, WHITE);*/
+            if (debug) {
+                AddLine(TextFormat("Player Position: %.2f %.2f %.2f", player.position.x, player.position.y, player.position.z), true);
+            }
         EndDrawing();
     }
     UnloadTextures();

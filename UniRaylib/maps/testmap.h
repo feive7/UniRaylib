@@ -1,36 +1,41 @@
 GameMap testmap = {
 	{
-		{3.0f,0.0f,3.0f},
-		{3.0f,0.0f,0.0f},
+		{0.0f,1.0f,0.0f},
+		{0.0f,0.0f,1.0f},
 		{0.0f,2.0f,0.0f},
 		{1.0f,2.0f,0.0f},
 	},
 	{
-		{{{0.0f,10.0f},{10.0f,10.0f},{10.0f,0.0f},{0.0f,0.0f}},-2.0f,2.0f,&tex_crate_c,WHITE,&shader_lighting}, // crate_c.009
-		{{{10.0f,10.0f},{14.0f,5.0f},{14.0f,-5.0f},{10.0f,-10.0f}},-1.0f,2.0f,&tex_crate_c,WHITE,&shader_lighting}, // crate_c.010
-		{{{-10.0f,10.0f},{-5.0f,14.0f},{5.0f,14.0f},{10.0f,10.0f}},-1.0f,2.0f,&tex_crate_c,WHITE,&shader_lighting}, // crate_c.011
-		{{{-10.0f,-10.0f},{-14.0f,-5.0f},{-14.0f,5.0f},{-10.0f,10.0f}},-1.0f,2.0f,&tex_crate_c,WHITE,&shader_lighting}, // crate_c.012
-		{{{10.0f,-10.0f},{5.0f,-14.0f},{-5.0f,-14.0f},{-10.0f,-10.0f}},-1.0f,2.0f,&tex_crate_c,WHITE,&shader_lighting}, // crate_c.013
-		{{{10.0f,-10.0f},{5.0f,-14.0f},{-5.0f,-14.0f},{-10.0f,-10.0f}},6.0f,2.0f,&tex_crate_c,WHITE,&shader_lighting}, // crate_c.014
-		{{{-10.0f,-10.0f},{-14.0f,-5.0f},{-14.0f,5.0f},{-10.0f,10.0f}},6.0f,2.0f,&tex_crate_c,WHITE,&shader_lighting}, // crate_c.015
-		{{{-10.0f,10.0f},{-5.0f,14.0f},{5.0f,14.0f},{10.0f,10.0f}},6.0f,2.0f,&tex_crate_c,WHITE,&shader_lighting}, // crate_c.016
-		{{{10.0f,10.0f},{14.0f,5.0f},{14.0f,-5.0f},{10.0f,-10.0f}},6.0f,2.0f,&tex_crate_c,WHITE,&shader_lighting}, // crate_c.017
-		{{{-10.0f,-0.0f},{-10.0f,10.0f},{-0.0f,10.0f},{0.0f,0.0f}},-2.0f,2.0f,&tex_crate_c,WHITE,&shader_lighting}, // crate_c.018
-		{{{0.0f,-10.0f},{-10.0f,-10.0f},{-10.0f,-0.0f},{-0.0f,0.0f}},-2.0f,2.0f,&tex_crate_c,WHITE,&shader_lighting}, // crate_c.019
-		{{{10.0f,0.0f},{10.0f,-10.0f},{0.0f,-10.0f},{-0.0f,-0.0f}},-2.0f,2.0f,&tex_crate_c,WHITE,&shader_lighting}, // crate_c.020
-		{{{-10.0f,10.0f},{10.0f,10.0f},{10.0f,-10.0f},{-10.0f,-10.0f}},6.0f,2.0f,&tex_crate_c,WHITE,&shader_lighting}, // crate_c.022
-		{{{-5.0f,16.0f},{5.0f,16.0f},{5.0f,14.0f},{-5.0f,14.0f}},0.0f,6.0f,&tex_scifi_floortile,WHITE,&shader_lighting}, // scifi_floortile.001
-		{{{5.0f,-16.0f},{-5.0f,-16.0f},{-5.0f,-14.0f},{5.0f,-14.0f}},0.0f,6.0f,&tex_scifi_floortile,WHITE,&shader_lighting}, // scifi_floortile.002
-		{{{16.0f,5.0f},{16.0f,-5.0f},{14.0f,-5.0f},{14.0f,5.0f}},-0.0f,6.0f,&tex_scifi_floortile,WHITE,&shader_lighting}, // scifi_floortile.003
-		{{{-16.0f,-5.0f},{-16.0f,5.0f},{-14.0f,5.0f},{-14.0f,-5.0f}},-0.0f,6.0f,&tex_scifi_floortile,WHITE,&shader_lighting}, // scifi_floortile.004
-		{{{-16.0f,5.0f},{-12.0f,12.0f},{-10.0f,10.0f},{-14.0f,5.0f}},-0.0f,6.0f,&tex_scifi_floortile,WHITE,&shader_lighting}, // scifi_floortile.005
-		{{{-16.0f,-5.0f},{-12.0f,-12.0f},{-10.0f,-10.0f},{-14.0f,-5.0f}},-0.0f,6.0f,&tex_scifi_floortile,WHITE,&shader_lighting}, // scifi_floortile.006
-		{{{16.0f,-5.0f},{12.0f,-12.0f},{10.0f,-10.0f},{14.0f,-5.0f}},-0.0f,6.0f,&tex_scifi_floortile,WHITE,&shader_lighting}, // scifi_floortile.007
-		{{{16.0f,5.0f},{12.0f,12.0f},{10.0f,10.0f},{14.0f,5.0f}},-0.0f,6.0f,&tex_scifi_floortile,WHITE,&shader_lighting}, // scifi_floortile.008
-		{{{-5.0f,16.0f},{-12.0f,12.0f},{-10.0f,10.0f},{-5.0f,14.0f}},-0.0f,6.0f,&tex_scifi_floortile,WHITE,&shader_lighting}, // scifi_floortile.009
-		{{{5.0f,16.0f},{12.0f,12.0f},{10.0f,10.0f},{5.0f,14.0f}},-0.0f,6.0f,&tex_scifi_floortile,WHITE,&shader_lighting}, // scifi_floortile.010
-		{{{5.0f,-16.0f},{12.0f,-12.0f},{10.0f,-10.0f},{5.0f,-14.0f}},-0.0f,6.0f,&tex_scifi_floortile,WHITE,&shader_lighting}, // scifi_floortile.011
-		{{{-5.0f,-16.0f},{-12.0f,-12.0f},{-10.0f,-10.0f},{-5.0f,-14.0f}},-0.0f,6.0f,&tex_scifi_floortile,WHITE,&shader_lighting}, // scifi_floortile.012
+		{{{-6.0f,18.0f},{6.0f,18.0f},{6.0f,8.0f},{-6.0f,8.0f}},4.0f,6.0f,&tex_concretewall,WHITE,&shader_lighting}, // concretewall.005
+		{{{6.0f,18.0f},{18.0f,18.0f},{18.0f,8.0f},{6.0f,8.0f}},8.0f,2.0f,&tex_concretewall,WHITE,&shader_lighting}, // concretewall.014
+		{{{20.0f,18.0f},{32.0f,18.0f},{32.0f,8.0f},{20.0f,8.0f}},8.0f,2.0f,&tex_concretewall,WHITE,&shader_lighting}, // concretewall.024
+		{{{6.0f,-6.0f},{18.0f,-6.0f},{18.0f,-8.0f},{6.0f,-8.0f}},0.0f,10.0f,&tex_rockwall,WHITE,&shader_lighting}, // rockwall.013
+		{{{6.0f,1.0f},{18.0f,1.0f},{18.0f,-1.0f},{6.0f,-1.0f}},3.0f,10.0f,&tex_rockwall,WHITE,&shader_lighting}, // rockwall.014
+		{{{6.0f,18.0f},{-6.0f,18.0f},{-6.0f,20.0f},{6.0f,20.0f}},0.0f,8.0f,&tex_stone,WHITE,&shader_lighting}, // stone.001
+		{{{-6.0f,-6.0f},{6.0f,-6.0f},{6.0f,-8.0f},{-6.0f,-8.0f}},0.0f,10.0f,&tex_stone,WHITE,&shader_lighting}, // stone.002
+		{{{-6.0f,6.0f},{-6.0f,-6.0f},{-8.0f,-6.0f},{-8.0f,6.0f}},-0.0f,10.0f,&tex_stone,WHITE,&shader_lighting}, // stone.003
+		{{{6.0f,8.0f},{18.0f,8.0f},{18.0f,6.0f},{6.0f,6.0f}},2.0f,8.0f,&tex_stone,WHITE,&shader_lighting}, // stone.004
+		{{{18.0f,6.0f},{18.0f,18.0f},{20.0f,18.0f},{20.0f,6.0f}},0.0f,8.0f,&tex_stone,WHITE,&shader_lighting}, // stone.005
+		{{{20.0f,-6.0f},{32.0f,-6.0f},{32.0f,-8.0f},{20.0f,-8.0f}},0.0f,10.0f,&tex_rockwall,WHITE,&shader_lighting}, // rockwall
+		{{{-6.0f,18.0f},{-6.0f,6.0f},{-8.0f,6.0f},{-8.0f,18.0f}},-0.0f,10.0f,&tex_stone,WHITE,&shader_lighting}, // stone.006
+		{{{18.0f,18.0f},{6.0f,18.0f},{6.0f,20.0f},{18.0f,20.0f}},0.0f,8.0f,&tex_stone,WHITE,&shader_lighting}, // stone.007
+		{{{20.0f,8.0f},{32.0f,8.0f},{32.0f,6.0f},{20.0f,6.0f}},5.0f,5.0f,&tex_stone,WHITE,&shader_lighting}, // stone.010
+		{{{32.0f,18.0f},{20.0f,18.0f},{20.0f,20.0f},{32.0f,20.0f}},0.0f,8.0f,&tex_stone,WHITE,&shader_lighting}, // stone.011
+		{{{32.0f,6.0f},{32.0f,18.0f},{34.0f,18.0f},{34.0f,6.0f}},0.0f,8.0f,&tex_stone,WHITE,&shader_lighting}, // stone.012
+		{{{32.0f,-6.0f},{32.0f,6.0f},{34.0f,6.0f},{34.0f,-6.0f}},0.0f,10.0f,&tex_stone,WHITE,&shader_lighting}, // stone.013
+		{{{18.0f,-6.0f},{20.0f,-6.0f},{20.0f,-8.0f},{18.0f,-8.0f}},0.0f,10.0f,&tex_stone,WHITE,&shader_lighting}, // stone.014
+		{{{-6.0f,6.0f},{-4.0f,6.0f},{-4.0f,-6.0f},{-6.0f,-6.0f}},-2.0f,2.0f,&tex_woodfloor,WHITE,&shader_lighting}, // woodfloor
+		{{{6.0f,6.0f},{18.0f,6.0f},{18.0f,-6.0f},{6.0f,-6.0f}},-2.0f,2.0f,&tex_woodfloor,WHITE,&shader_lighting}, // woodfloor.001
+		{{{6.0f,18.0f},{18.0f,18.0f},{18.0f,6.0f},{6.0f,6.0f}},-2.0f,2.0f,&tex_woodfloor,WHITE,&shader_lighting}, // woodfloor.002
+		{{{18.0f,6.0f},{20.0f,6.0f},{20.0f,-6.0f},{18.0f,-6.0f}},-2.0f,2.0f,&tex_woodfloor,WHITE,&shader_lighting}, // woodfloor.003
+		{{{20.0f,6.0f},{32.0f,6.0f},{32.0f,-6.0f},{20.0f,-6.0f}},-2.0f,2.0f,&tex_woodfloor,WHITE,&shader_lighting}, // woodfloor.004
+		{{{20.0f,18.0f},{32.0f,18.0f},{32.0f,6.0f},{20.0f,6.0f}},-2.0f,2.0f,&tex_woodfloor,WHITE,&shader_lighting}, // woodfloor.005
+		{{{-6.0f,18.0f},{6.0f,18.0f},{6.0f,6.0f},{-6.0f,6.0f}},-2.0f,2.0f,&tex_woodfloor,WHITE,&shader_lighting}, // woodfloor.006
+		{{{-4.0f,6.0f},{-2.0f,6.0f},{-2.0f,-6.0f},{-4.0f,-6.0f}},-2.0f,2.0f,&tex_woodfloor,WHITE,&shader_lighting}, // woodfloor.007
+		{{{-2.0f,6.0f},{0.0f,6.0f},{0.0f,-6.0f},{-2.0f,-6.0f}},-2.0f,2.0f,&tex_woodfloor,WHITE,&shader_lighting}, // woodfloor.008
+		{{{0.0f,6.0f},{2.0f,6.0f},{2.0f,-6.0f},{0.0f,-6.0f}},-2.0f,2.0f,&tex_woodfloor,WHITE,&shader_lighting}, // woodfloor.009
+		{{{2.0f,6.0f},{4.0f,6.0f},{4.0f,-6.0f},{2.0f,-6.0f}},-2.0f,2.0f,&tex_woodfloor,WHITE,&shader_lighting}, // woodfloor.010
+		{{{4.0f,6.0f},{6.0f,6.0f},{6.0f,-6.0f},{4.0f,-6.0f}},-2.0f,2.0f,&tex_woodfloor,WHITE,&shader_lighting}, // woodfloor.011
 	},
 	{
 	},
