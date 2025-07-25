@@ -96,14 +96,14 @@ public:
 	}
 	void noclip(Vector3 localMovement) {
 		Vector3 forward = getForward();
-		Vector3 right = getRight();
+		Vector3 right = getRight(); right.y = 0.0f; right = Vector3Normalize(right);
 		Vector3 movement = Vector3Scale(forward, localMovement.z) + Vector3Scale({0.0f,1.0f,0.0f}, localMovement.y) + Vector3Scale(right, localMovement.x);
 		position += movement;
 		target = position + forward;
 	}
 	void move(Vector3 localMovement, GameMap* scene) {
 		Vector3 forward = getForward(); forward.y = 0.0f; forward = Vector3Normalize(forward);
-		Vector3 right = getRight();
+		Vector3 right = getRight(); right.y = 0.0f; right = Vector3Normalize(right);
 		
 		Vector3 wishvel = Vector3Scale(forward, localMovement.z) + Vector3Scale(right, localMovement.x);
 		/*Vector3 wishdir = Vector3Normalize(wishvel);
