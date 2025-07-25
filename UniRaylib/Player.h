@@ -46,10 +46,11 @@ public:
 				if (CheckCollisionCircleQuad({ newpos.x,newpos.z }, radius, p[0], p[1], p[2], p[3])) {
 					if (newpos.y <= wall.z + wall.height && newpos.y > wall.z + wall.height - 1.0f) {
 						grounded = true;
+						wishvel.y = 0.0f;
 						newpos.y = wall.z + wall.height;
 					}
 					else if (newpos.y + height > wall.z && newpos.y + height < wall.z + 1.0f) {
-						velocity.y = 0.0f;
+						wishvel.y = 0.0f;
 						newpos.y = wall.z - height;
 					}
 				}

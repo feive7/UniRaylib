@@ -49,7 +49,7 @@ void AddLine(const char* text, bool reset = false) {
     if (reset) {
         y = 0;
     }
-    DrawText(text, 0, 20 * y + 10, 20, WHITE);
+    DrawText(text, 5, 20 * y + 5, 20, WHITE);
     y++;
 }
 int main(void) {
@@ -101,8 +101,8 @@ int main(void) {
             Vector3 t = player.facing();
             if (debug) {
                 AddLine(TextFormat("Player Position: %.2f %.2f %.2f", player.position.x, player.position.y, player.position.z), true);
+                AddLine(TextFormat("Player Velocity: %.2f %.2f %.2f", player.velocity.x, player.velocity.y, player.velocity.z));
                 AddLine(TextFormat("Player OnGround: %i", player.onGround));
-                AddLine(TextFormat("Player Clip: %i", player.position.y < 1.0f));
             }
         EndDrawing();
     }

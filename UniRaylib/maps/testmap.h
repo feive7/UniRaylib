@@ -10,6 +10,16 @@ GameMap testmap = {
 		{{{6.0f,18.0f},{18.0f,18.0f},{18.0f,8.0f},{6.0f,8.0f}},8.0f,2.0f,&tex_concretewall,WHITE,&shader_lighting}, // concretewall.014
 		{{{20.0f,18.0f},{32.0f,18.0f},{32.0f,8.0f},{20.0f,8.0f}},8.0f,2.0f,&tex_concretewall,WHITE,&shader_lighting}, // concretewall.024
 		{{{9.0f,1.0f},{11.0f,1.0f},{11.0f,-1.0f},{9.0f,-1.0f}},-1.0f,2.0f,&tex_grass,WHITE,&shader_lighting}, // grass
+		{{{19.5f,-2.0f},{20.5f,-2.0f},{20.5f,-6.0f},{19.5f,-6.0f}},-1.0f,2.0f,&tex_grass,WHITE,&shader_lighting}, // grass.010
+		{{{20.5f,-2.0f},{21.5f,-2.0f},{21.5f,-6.0f},{20.5f,-6.0f}},0.0f,2.0f,&tex_grass,WHITE,&shader_lighting}, // grass.011
+		{{{21.5f,-2.0f},{22.5f,-2.0f},{22.5f,-6.0f},{21.5f,-6.0f}},1.0f,2.0f,&tex_grass,WHITE,&shader_lighting}, // grass.012
+		{{{22.5f,-2.0f},{23.5f,-2.0f},{23.5f,-6.0f},{22.5f,-6.0f}},2.0f,2.0f,&tex_grass,WHITE,&shader_lighting}, // grass.013
+		{{{23.5f,-2.0f},{24.5f,-2.0f},{24.5f,-6.0f},{23.5f,-6.0f}},3.0f,2.0f,&tex_grass,WHITE,&shader_lighting}, // grass.014
+		{{{24.5f,-2.0f},{25.5f,-2.0f},{25.5f,-6.0f},{24.5f,-6.0f}},4.0f,2.0f,&tex_grass,WHITE,&shader_lighting}, // grass.015
+		{{{25.5f,-2.0f},{26.5f,-2.0f},{26.5f,-6.0f},{25.5f,-6.0f}},5.0f,2.0f,&tex_grass,WHITE,&shader_lighting}, // grass.016
+		{{{26.5f,-2.0f},{27.5f,-2.0f},{27.5f,-6.0f},{26.5f,-6.0f}},6.0f,2.0f,&tex_grass,WHITE,&shader_lighting}, // grass.017
+		{{{27.5f,-2.0f},{28.5f,-2.0f},{28.5f,-6.0f},{27.5f,-6.0f}},7.0f,2.0f,&tex_grass,WHITE,&shader_lighting}, // grass.018
+		{{{28.5f,-2.0f},{29.5f,-2.0f},{29.5f,-6.0f},{28.5f,-6.0f}},8.0f,2.0f,&tex_grass,WHITE,&shader_lighting}, // grass.019
 		{{{6.0f,-6.0f},{18.0f,-6.0f},{18.0f,-8.0f},{6.0f,-8.0f}},0.0f,10.0f,&tex_rockwall,WHITE,&shader_lighting}, // rockwall.013
 		{{{6.0f,18.0f},{-6.0f,18.0f},{-6.0f,20.0f},{6.0f,20.0f}},0.0f,8.0f,&tex_stone,WHITE,&shader_lighting}, // stone.001
 		{{{-6.0f,-6.0f},{6.0f,-6.0f},{6.0f,-8.0f},{-6.0f,-8.0f}},0.0f,10.0f,&tex_stone,WHITE,&shader_lighting}, // stone.002
