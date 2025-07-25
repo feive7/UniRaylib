@@ -7,14 +7,25 @@ public:
 	Vector3 target;
 	Vector3 velocity;
 	float height;
+	float maxHeight;
 	float radius;
+	float speed;
+
 	bool onGround = false;
+	bool jumping = false;
+	bool crouching = false;
+	bool sprinting = false;
 	bool noClipping = false;
-	Vector3 facing() {
-		return Vector3Normalize(Vector3Subtract(target, position));
-	}
+
 	Vector3 headPos() {
 		return Vector3Add(position, { 0.0f,height - 1.0f,0.0f });
+	}
+	Vector3 getForward() {
+		return Vector3Normalize(Vector3Subtract(target, position));
+	}
+	Vector3 getRight() {
+		Vector3 f = getForward();
+		return { -f.z,0.0f,f.x };
 	}
 	Vector3 tryMove(Vector3& wishvel, GameMap* scene) {
 		Vector3 oldpos = position;
@@ -83,9 +94,16 @@ public:
 		velocity.x += addendum.x;
 		velocity.z += addendum.z;
 	}
+	void noclip(Vector3 localMovement) {
+		Vector3 forward = getForward();
+		Vector3 right = getRight();
+		Vector3 movement = Vector3Scale(forward, localMovement.z) + Vector3Scale({0.0f,1.0f,0.0f}, localMovement.y) + Vector3Scale(right, localMovement.x);
+		position += movement;
+		target = position + forward;
+	}
 	void move(Vector3 localMovement, GameMap* scene) {
-		Vector3 forward = facing(); forward.y = 0.0f; forward = Vector3Normalize(forward);
-		Vector3 right = { -forward.z,0.0f,forward.x };
+		Vector3 forward = getForward(); forward.y = 0.0f; forward = Vector3Normalize(forward);
+		Vector3 right = getRight();
 		
 		Vector3 wishvel = Vector3Scale(forward, localMovement.z) + Vector3Scale(right, localMovement.x);
 		/*Vector3 wishdir = Vector3Normalize(wishvel);
@@ -111,22 +129,53 @@ public:
 			Vector3 camforward = GetCameraForward(camera);
 			camera->position = headPos();
 			camera->target = camera->position + camforward;
-			target = camera->position + camforward;
+			target = position + camforward;
+		}
+	}
+	void updateSpeed() {
+		if (crouching) {
+			speed = 0.08f;
+		}
+		else if (sprinting) {
+			speed = 0.5f;
+		}
+		else {
+			speed = 0.2f;
+		}
+	}
+	void updateState() {
+		sprinting = IsKeyDown(KEY_LEFT_SHIFT);
+		crouching = IsKeyDown(KEY_LEFT_CONTROL);
+		jumping = IsKeyDown(KEY_SPACE);
+	}
+	void updateHeight() {
+		if (crouching) {
+			float targetheight = maxHeight - 1.0f;
+			height = (targetheight - height) * 0.5f + height;
+		}
+		else {
+			float targetheight = maxHeight;
+			height = (targetheight - height) * 0.5f + height;
 		}
 	}
 	void update(GameMap* scene) {
-		Vector3 movement = { IsKeyDown(KEY_D) - IsKeyDown(KEY_A),0.0f,IsKeyDown(KEY_W) - IsKeyDown(KEY_S) };
-		if (IsKeyDown(KEY_SPACE) && onGround) {
-			velocity.y += 0.5f;
+		updateState();
+		updateHeight();
+		updateSpeed();
+		Vector3 movement = { IsKeyDown(KEY_D) - IsKeyDown(KEY_A), IsKeyDown(KEY_SPACE) - IsKeyDown(KEY_LEFT_CONTROL),IsKeyDown(KEY_W) - IsKeyDown(KEY_S)};
+
+		if (jumping && onGround) {
+			velocity.y = 0.5f;
 			onGround = false;
 		}
 
-		float speed = 0.2f;
-		if (IsKeyDown(KEY_LEFT_SHIFT)) speed = 0.5f;
-		if (IsKeyDown(KEY_LEFT_CONTROL)) speed = 0.08f;
-
 		movement = Vector3Scale(movement, speed);
-		move(movement, scene);
+		if (noClipping) {
+			noclip(movement);
+		}
+		else {
+			move(movement, scene);
+		}
 	}
 };
 void UpdateCameraScene(Camera* sceneCamera, GameMap* scene, bool move = false, bool ignore_portals = false) {

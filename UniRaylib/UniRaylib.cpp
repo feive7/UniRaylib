@@ -23,12 +23,11 @@ void DrawPortalNormals(Portal* portal) {
 void DrawPlayer(Player* player) {
     Vector3 headpos = Vector3Add(player->position, { 0.0f,player->height,0.0f });
     Vector3 aboveFloor = Vector3Add(player->position, { 0.0f,0.01f,0.0f });
-    Vector3 facing = player->facing(); facing.y = 0.0f; facing = Vector3Normalize(facing);
+    Vector3 facing = player->getForward(); facing.y = 0.0f; facing = Vector3Normalize(facing);
     DrawCapsule(player->position, headpos, player->radius, 10, 10, RED);
     DrawLine3D(aboveFloor, Vector3Add(aboveFloor, Vector3Scale(facing, 2.0f*player->radius)), BLUE);
     DrawCircle3D(player->position, player->radius, { 1.0f, 0.0f, 0.0f }, 90.0f, GRAY); // Draw player as a circle on the ground
     DrawCircle3D(player->position + Vector3{ 0.0f,player->height,0.0f }, player->radius, { 1.0f, 0.0f, 0.0f }, 90.0f, GRAY);
-
 }
 void ResetCamera(Camera* camera) {
     camera->position = MAP.playerstart.camera_position;  // Camera position
@@ -42,6 +41,7 @@ void ResetPlayer(Player* player) {
     player->target = MAP.playerstart.player_target;
     player->velocity = { 0.0f,0.0f,0.0f };
     player->height = 3.0f;
+    player->maxHeight = player->height;
     player->radius = 1.0f;
 }
 void AddLine(const char* text, bool reset = false) {
@@ -98,9 +98,9 @@ int main(void) {
                     DrawBillboard(freecam, icon_lightbulb, MAP.lights[i].position, 1.0f, WHITE);
                 }
             EndMode3D();
-            Vector3 t = player.facing();
             if (debug) {
                 AddLine(TextFormat("Player Position: %.2f %.2f %.2f", player.position.x, player.position.y, player.position.z), true);
+                AddLine(TextFormat("Player Target: %.2f %.2f %.2f", player.target.x, player.target.y, player.target.z));
                 AddLine(TextFormat("Player Velocity: %.2f %.2f %.2f", player.velocity.x, player.velocity.y, player.velocity.z));
                 AddLine(TextFormat("Player OnGround: %i", player.onGround));
             }
