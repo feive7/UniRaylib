@@ -208,3 +208,15 @@ static void DrawText3D(Font font, const char* text, Vector3 position, float font
         i += codepointByteCount;
     }
 }
+float RandomFloat(float min, float max, float step = 0.1f) {
+    return GetRandomValue(min / step, max / step) * step;
+}
+Color RandomColor(bool random_alpha = false) {
+    unsigned char alpha = 255;
+    if (random_alpha)
+        alpha = (unsigned char)GetRandomValue(0, 255);
+    return { (unsigned char)GetRandomValue(0,255), (unsigned char)GetRandomValue(0,255), (unsigned char)GetRandomValue(0,255), alpha };
+}
+void printC(Color c) {
+    printf("%u %u %u (%u)\n", c.r, c.g, c.b, c.a);
+}
