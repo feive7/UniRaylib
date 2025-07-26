@@ -1,0 +1,1 @@
+#define FLAG_CLIMBABLE 1

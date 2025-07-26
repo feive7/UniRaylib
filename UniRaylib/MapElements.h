@@ -15,6 +15,16 @@ public:
 		DrawBillboard(*cam, *texture, position, scale, tint);
 	}
 };
+class Sign {
+public:
+	const char* text;
+	Vector3 position;
+	float angle;
+	void draw() {
+		DrawText3D(GetFontDefault(), text, position, 0.8f, 0.1f, 0.0f, false, BLUE, angle);
+		DrawCube(position, 0.1f, 0.1f, 0.1f, RED);
+	}
+};
 class Linedef {
 public:
 	Vector2 start;
@@ -69,6 +79,7 @@ public:
 	Texture* texture;
 	Color tint;
 	Shader* shader;
+	int flags = 0;
 };
 class Portal {
 public:
@@ -169,6 +180,7 @@ class GameMap {
 public:
 	Playerstart playerstart;
 	std::vector<Wall> walls;
+	std::vector<Sign> signs;
 	std::vector<Portal> portals;
 	float ambientLight;
 	std::vector<Light> lights;
@@ -219,6 +231,9 @@ public:
 
 			rlEnd();
 			EndShaderMode();
+		}
+		for (Sign& sign : signs) {
+			sign.draw();
 		}
 	}
 	void draw_portals() {

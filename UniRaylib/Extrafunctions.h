@@ -44,7 +44,7 @@ void printV(Vector3 v) {
 void toggle(bool& boolean) {
 	boolean = !boolean;
 }
-static void DrawTextCodepoint3D(Font font, int codepoint, Vector3 position, float fontSize, bool backface, Color tint)
+static void DrawTextCodepoint3D(Font font, int codepoint, Vector3 position, float fontSize, bool backface, Color tint, float angle)
 {
     // Character index position in sprite font
     // NOTE: In case a codepoint is not available in the font, index returned points to '?'
@@ -82,26 +82,27 @@ static void DrawTextCodepoint3D(Font font, int codepoint, Vector3 position, floa
         rlSetTexture(font.texture.id);
 
         rlPushMatrix();
-        rlTranslatef(position.x, position.y, position.z);
+        rlTranslatef(position.x, position.y - 0.15f, position.z - sin(angle * DEG2RAD) * width);
+        rlRotatef(-angle, 0.0f, 1.0f, 0.0f);
 
         rlBegin(RL_QUADS);
         rlColor4ub(tint.r, tint.g, tint.b, tint.a);
 
         // Front Face
         rlNormal3f(0.0f, 1.0f, 0.0f);                                   // Normal Pointing Up
-        rlTexCoord2f(tx, ty); rlVertex3f(x, y, z);              // Top Left Of The Texture and Quad
-        rlTexCoord2f(tx, th); rlVertex3f(x, y, z + height);     // Bottom Left Of The Texture and Quad
-        rlTexCoord2f(tw, th); rlVertex3f(x + width, y, z + height);     // Bottom Right Of The Texture and Quad
-        rlTexCoord2f(tw, ty); rlVertex3f(x + width, y, z);              // Top Right Of The Texture and Quad
+        rlTexCoord2f(tx, ty); rlVertex3f(x, y + height, z);              // Top Left Of The Texture and Quad
+        rlTexCoord2f(tx, th); rlVertex3f(x, y, z);     // Bottom Left Of The Texture and Quad
+        rlTexCoord2f(tw, th); rlVertex3f(x + width, y, z);     // Bottom Right Of The Texture and Quad
+        rlTexCoord2f(tw, ty); rlVertex3f(x + width, y + height, z);              // Top Right Of The Texture and Quad
 
         if (backface)
         {
             // Back Face
             rlNormal3f(0.0f, -1.0f, 0.0f);                              // Normal Pointing Down
-            rlTexCoord2f(tx, ty); rlVertex3f(x, y, z);          // Top Right Of The Texture and Quad
-            rlTexCoord2f(tw, ty); rlVertex3f(x + width, y, z);          // Top Left Of The Texture and Quad
-            rlTexCoord2f(tw, th); rlVertex3f(x + width, y, z + height); // Bottom Left Of The Texture and Quad
-            rlTexCoord2f(tx, th); rlVertex3f(x, y, z + height); // Bottom Right Of The Texture and Quad
+            rlTexCoord2f(tx, ty); rlVertex3f(x, y + height, z);          // Top Right Of The Texture and Quad
+            rlTexCoord2f(tw, ty); rlVertex3f(x + width, y + height, z);          // Top Left Of The Texture and Quad
+            rlTexCoord2f(tw, th); rlVertex3f(x + width, y, z); // Bottom Left Of The Texture and Quad
+            rlTexCoord2f(tx, th); rlVertex3f(x, y, z); // Bottom Right Of The Texture and Quad
         }
         rlEnd();
         rlPopMatrix();
@@ -109,44 +110,101 @@ static void DrawTextCodepoint3D(Font font, int codepoint, Vector3 position, floa
         rlSetTexture(0);
     }
 }
-static void DrawText3D(Font font, const char* text, Vector3 position, float fontSize, float fontSpacing, float lineSpacing, bool backface, Color tint)
+static void DrawText3DR(Font font, const char* text, Vector3 position, float fontSize, float fontSpacing, float lineSpacing, bool backface, Color tint, float angle)
 {
-    int length = TextLength(text);          // Total length in bytes of the text, scanned by codepoints in loop
-
-    float textOffsetY = 0.0f;               // Offset between lines (on line break '\n')
-    float textOffsetX = 0.0f;               // Offset X to next character to draw
-
+    int length = TextLength(text);
     float scale = fontSize / (float)font.baseSize;
+    // Convert text to array of codepoints so we can iterate backwards
+    int codepoints[512] = { 0 }; // Assuming max 512 characters
+    int codepointCount = 0;
 
-    for (int i = 0; i < length;)
-    {
-        // Get next codepoint from byte string and glyph index in font
+    for (int i = 0; i < length;) {
         int codepointByteCount = 0;
         int codepoint = GetCodepoint(&text[i], &codepointByteCount);
+        if (codepoint == 0x3f) codepointByteCount = 1;
+        codepoints[codepointCount++] = codepoint;
+        i += codepointByteCount;
+    }
+
+    float textOffsetX = 0.0f;
+    float textOffsetY = 0.0f;
+
+    for (int i = codepointCount - 1; i >= 0; i--) {
+        int codepoint = codepoints[i];
         int index = GetGlyphIndex(font, codepoint);
 
-        // NOTE: Normally we exit the decoding sequence as soon as a bad byte is found (and return 0x3f)
-        // but we need to draw all of the bad bytes using the '?' symbol moving one byte
+        if (codepoint == '\n') {
+            textOffsetY += fontSize + lineSpacing;
+            textOffsetX = 0.0f;
+            continue;
+        }
+
+        float advance = (font.glyphs[index].advanceX != 0) ?
+            font.glyphs[index].advanceX * scale : font.recs[index].width * scale;
+
+        // Pre-offset to right-align glyphs
+        textOffsetX += advance + fontSpacing;
+
+        // Rotate offset
+        float rad = angle * DEG2RAD;
+        float rotatedX = cos(rad) * textOffsetX;
+        float rotatedZ = sin(rad) * textOffsetX;
+
+        Vector3 charPos = {
+            position.x - rotatedX,             // subtract to mirror
+            position.y - textOffsetY,
+            position.z - rotatedZ
+        };
+
+        if ((codepoint != ' ') && (codepoint != '\t')) {
+            DrawTextCodepoint3D(font, codepoint, charPos, fontSize, backface, tint, angle + 180);
+        }
+    }
+}
+static void DrawText3D(Font font, const char* text, Vector3 position, float fontSize, float fontSpacing, float lineSpacing, bool backface, Color tint, float angle)
+{
+    int length = TextLength(text);
+    float textOffsetY = 0.0f;
+    float textOffsetX = 0.0f;
+    float scale = fontSize / (float)font.baseSize;
+
+    for (int i = 0; i < length;) {
+        int codepointByteCount = 0;
+        int codepoint = GetCodepoint(&text[length-i-1], &codepointByteCount);
+        int index = GetGlyphIndex(font, codepoint);
+
         if (codepoint == 0x3f) codepointByteCount = 1;
 
-        if (codepoint == '\n')
-        {
-            // NOTE: Fixed line spacing of 1.5 line-height
-            // TODO: Support custom line spacing defined by user
+        if (codepoint == '\n') {
             textOffsetY += fontSize + lineSpacing;
             textOffsetX = 0.0f;
         }
-        else
-        {
-            if ((codepoint != ' ') && (codepoint != '\t'))
-            {
-                DrawTextCodepoint3D(font, codepoint, { position.x + textOffsetX, position.y, position.z + textOffsetY }, fontSize, backface, tint);
+        else {
+            // Calculate character position in local space
+            float offsetX = textOffsetX;
+            float offsetZ = 0.0f;
+
+            // Rotate the offset vector around Y-axis (angle in degrees)
+            float rad = angle * DEG2RAD;
+            float rotatedX = cos(rad) * offsetX - sin(rad) * offsetZ;
+            float rotatedZ = sin(rad) * offsetX + cos(rad) * offsetZ;
+
+            Vector3 charPos = {
+                position.x + rotatedX,
+                position.y - textOffsetY,
+                position.z + rotatedZ
+            };
+
+            if ((codepoint != ' ') && (codepoint != '\t')) {
+                DrawTextCodepoint3D(font, codepoint, charPos, fontSize, backface, tint, angle + 180);
             }
 
-            if (font.glyphs[index].advanceX == 0) textOffsetX += (float)font.recs[index].width * scale + fontSpacing;
-            else textOffsetX += (float)font.glyphs[index].advanceX * scale + fontSpacing;
+            float advance = (font.glyphs[index].advanceX != 0) ?
+                font.glyphs[index].advanceX * scale : font.recs[index].width * scale;
+
+            textOffsetX += advance + fontSpacing;
         }
 
-        i += codepointByteCount;   // Move text bytes counter to next codepoint
+        i += codepointByteCount;
     }
 }

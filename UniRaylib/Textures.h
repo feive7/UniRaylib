@@ -2,6 +2,7 @@ Texture tex_scifi_floortile;
 Texture tex_crate_c;
 Texture tex_grass;
 Texture tex_rockwall;
+Texture tex_wooddoor;
 Texture tex_woodfloor;
 Texture tex_concretewall;
 Texture tex_brick;
@@ -16,6 +17,7 @@ void InitTextures() {
 	tex_crate_c = LoadTexture("assets/textures/tex_crate_c.png");
 	tex_grass = LoadTexture("assets/textures/tex_grass.png");
 	tex_rockwall = LoadTexture("assets/textures/tex_rockwall.png");
+	tex_wooddoor = LoadTexture("assets/textures/tex_wooddoor.png");
 	tex_woodfloor = LoadTexture("assets/textures/tex_woodfloor.png");
 	tex_concretewall = LoadTexture("assets/textures/tex_concretewall.jpg");
 	tex_brick = LoadTexture("assets/textures/tex_brick.jpg");
@@ -30,11 +32,12 @@ void UnloadTextures() {
 	UnloadTexture(tex_crate_c);
 	UnloadTexture(tex_grass);
 	UnloadTexture(tex_rockwall);
+	UnloadTexture(tex_wooddoor);
 	UnloadTexture(tex_woodfloor);
 	UnloadTexture(tex_concretewall);
 	UnloadTexture(tex_brick);
 	UnloadTexture(tex_stone);
-	UnloadTexture(tex_lava);
+	UnloadTexture(tex_lava); 
 	UnloadTexture(tex_error);
 
 	UnloadTexture(icon_lightbulb);

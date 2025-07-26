@@ -1,3 +1,4 @@
+#include "Flags.h"
 #define MOUSE_SENSITIVITY 100
 #define CAMERA_MODE_FIRST_PERSON 1
 #define GRAVITY 2.0f
@@ -13,9 +14,11 @@ public:
 
 	bool onGround = false;
 	bool jumping = false;
+	bool climbing = false;
 	bool crouching = false;
 	bool sprinting = false;
 	bool noClipping = false;
+	bool canUncrouch = true;
 
 	Vector3 headPos() {
 		return Vector3Add(position, { 0.0f,height - 1.0f,0.0f });
@@ -30,43 +33,52 @@ public:
 	Vector3 tryMove(Vector3& wishvel, GameMap* scene) {
 		Vector3 oldpos = position;
 		Vector3 newpos = position + wishvel;
-		if (!noClipping) {
-			bool grounded = false;
-			bool touchingWall = false;
-			for (Wall& wall : scene->walls) {
-				for (int i = 0; i < 4; i++) {
-					Vector2 A = wall.points[i];
-					Vector2 B = wall.points[(i + 1) % 4];
-					Linedef line = { A,B };
-					float distance = line.lineDistance({ newpos.x,newpos.z });
-					if (distance < radius && oldpos.y < wall.z + wall.height && oldpos.y + height > wall.z) {
-						Vector2 normal = line.getNormal();
-						float side = line.lineSide({ newpos.x,newpos.z });
-						Vector2 pushback = Vector2Scale(normal, side * (radius - distance));
+		bool grounded = false;
+		bool touchingWall = false;
+		bool touchingCeiling = false;
+		for (Wall& wall : scene->walls) {
+			for (int i = 0; i < 4; i++) {
+				Vector2 A = wall.points[i];
+				Vector2 B = wall.points[(i + 1) % 4];
+				Linedef line = { A,B };
+				float distance = line.lineDistance({ newpos.x,newpos.z });
+				if (distance < radius && oldpos.y < wall.z + wall.height && oldpos.y + height > wall.z) {
+					Vector2 normal = line.getNormal();
+					float side = line.lineSide({ newpos.x,newpos.z });
+					Vector2 pushback = Vector2Scale(normal, side * (radius - distance));
 
-						wishvel.x -= pushback.x;
-						wishvel.z -= pushback.y;
+					wishvel.x -= pushback.x;
+					wishvel.z -= pushback.y;
 
-						newpos.x -= pushback.x;
-						newpos.z -= pushback.y;
+					newpos.x -= pushback.x;
+					newpos.z -= pushback.y;
 
-						touchingWall = true;
-					}
-				}
-				Vector2* p = wall.points;
-				if (CheckCollisionCircleQuad({ newpos.x,newpos.z }, radius, p[0], p[1], p[2], p[3])) {
-					if (newpos.y <= wall.z + wall.height && newpos.y > wall.z + wall.height - 1.0f) {
-						grounded = true;
-						wishvel.y = 0.0f;
-						newpos.y = wall.z + wall.height;
-					}
-					else if (newpos.y + height > wall.z && newpos.y + height < wall.z + 1.0f) {
-						wishvel.y = 0.0f;
-						newpos.y = wall.z - height;
+					touchingWall = true;
+
+					if (wall.flags & FLAG_CLIMBABLE) {
+						newpos.y += 0.01f;
+						wishvel.y = 0.3f;
 					}
 				}
 			}
+			Vector2* p = wall.points;
+			if (CheckCollisionCircleQuad({ newpos.x,newpos.z }, radius, p[0], p[1], p[2], p[3])) {
+				if (newpos.y <= wall.z + wall.height && newpos.y > wall.z + wall.height - 1.0f) {
+					grounded = true;
+					wishvel.y = 0.0f;
+					newpos.y = wall.z + wall.height;
+				}
+				else if (newpos.y + height > wall.z && newpos.y + height < wall.z + 1.0f) {
+					wishvel.y = 0.0f;
+					touchingCeiling = true;
+					newpos.y = wall.z - height;
+				}
+				else if (newpos.y + height + 0.1f >= wall.z) {
+					touchingCeiling = true;
+				}
+			}
 			onGround = grounded;
+			canUncrouch = !touchingCeiling;
 		}
 		for (Portal& portal : scene->portals) {
 			Linedef* portal1 = &portal.sectors[0];
@@ -149,13 +161,16 @@ public:
 		jumping = IsKeyDown(KEY_SPACE);
 	}
 	void updateHeight() {
+		float targetheight = maxHeight;
 		if (crouching) {
-			float targetheight = maxHeight - 1.0f;
-			height = (targetheight - height) * 0.5f + height;
+			targetheight = maxHeight - 1.0f;
 		}
-		else {
-			float targetheight = maxHeight;
-			height = (targetheight - height) * 0.5f + height;
+		
+		if (targetheight < height) { // Height wants to go down
+			height -= fmin(0.1f, height - targetheight);
+		}
+		if (targetheight > height && canUncrouch) { // Height wants to go up
+			height += fmin(0.1f, targetheight - height);
 		}
 	}
 	void update(GameMap* scene) {

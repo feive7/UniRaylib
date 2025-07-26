@@ -102,7 +102,9 @@ int main(void) {
                 AddLine(TextFormat("Player Position: %.2f %.2f %.2f", player.position.x, player.position.y, player.position.z), true);
                 AddLine(TextFormat("Player Target: %.2f %.2f %.2f", player.target.x, player.target.y, player.target.z));
                 AddLine(TextFormat("Player Velocity: %.2f %.2f %.2f", player.velocity.x, player.velocity.y, player.velocity.z));
+                AddLine(TextFormat("Player Height: %.2f", player.height));
                 AddLine(TextFormat("Player OnGround: %i", player.onGround));
+                AddLine(TextFormat("Player Uncrouch: %i", player.canUncrouch));
             }
         EndDrawing();
     }

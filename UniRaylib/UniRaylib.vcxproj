@@ -140,6 +140,7 @@
     <ClCompile Include="UniRaylib.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Flags.h" />
     <ClInclude Include="Lighting.h" />
     <ClInclude Include="MapElements.h" />
     <ClInclude Include="maps\testmap.h" />
