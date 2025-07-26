@@ -1,0 +1,55 @@
+#include "Flags.h"
+#define GRAVITY 2.0f
+class Ball {
+public:
+	Vector3 position;
+	Vector3 velocity;
+	Color color;
+	bool active = false;
+	float radius = 0.5f;
+	void tick(GameMap* scene) {
+		if (!active) return;
+		Vector3 wishvel = Vector3Subtract(velocity, {0.0f,GRAVITY*GetFrameTime(),0.0f});
+		Vector3 oldpos = position;
+		Vector3 newpos = position + wishvel;
+		for (Wall& wall : scene->walls) {
+			for (int i = 0; i < 4; i++) {
+				Vector2 A = wall.points[i];
+				Vector2 B = wall.points[(i + 1) % 4];
+				Linedef line = { A,B };
+				float distance = line.lineDistance({ newpos.x,newpos.z });
+				if (distance < radius && oldpos.y - radius < wall.z + wall.height && oldpos.y + radius > wall.z) {
+					Vector2 normal = line.getNormal();
+					float side = line.lineSide({ newpos.x,newpos.z });
+					Vector2 pushback = Vector2Scale(normal, side * (radius - distance));
+
+					newpos.x -= pushback.x;
+					newpos.z -= pushback.y;
+
+					Vector3 normal3 = { normal.x, 0.0f, normal.y };
+					wishvel = wishvel - Vector3Scale(normal3, 2 * Vector3DotProduct(wishvel, normal3));
+				}
+			}
+			Vector2* p = wall.points;
+			if (CheckCollisionCircleQuad({ newpos.x,newpos.z }, radius, p[0], p[1], p[2], p[3])) {
+				if (newpos.y - radius < wall.z + wall.height && newpos.y - radius > wall.z + wall.height - 1.0f) { // Hit top of wall
+					float distanceIn = wall.z + wall.height - newpos.y + radius;
+					newpos.y = wall.z + wall.height + radius + distanceIn; // Place ball on top of wall
+					wishvel.y = -wishvel.y;
+				}
+				else if (newpos.y + radius > wall.z && newpos.y + radius < wall.z + 1.0f) { // Hit underside of wall
+					float distanceIn = wall.z - newpos.y + radius;
+					newpos.y = wall.z - radius;
+					wishvel.y = -wishvel.y;
+				}
+			}
+			velocity = wishvel;
+			position = newpos;
+		}
+	}
+	void draw(Camera* camera) {
+		if (!active) return;
+		//DrawBillboard(*camera, tex_ball, position, 1.0f, WHITE);
+		DrawModel(mdl_ball, position, radius, color);
+	}
+};
