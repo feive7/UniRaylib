@@ -14,11 +14,11 @@ public:
 
 	bool onGround = false;
 	bool jumping = false;
-	bool climbing = false;
+	bool climbing = false; // unused
 	bool crouching = false;
 	bool sprinting = false;
 	bool noClipping = false;
-	bool canUncrouch = true;
+	float ceilingHeight;
 
 	Vector3 headPos() {
 		return Vector3Add(position, { 0.0f,height - 1.0f,0.0f });
@@ -73,14 +73,19 @@ public:
 					wishvel.y = 0.0f;
 					newpos.y = wall.z + wall.height;
 				}
-				else if (newpos.y + height > wall.z && newpos.y + height < wall.z + 1.0f) {
+				}
+				else if (newpos.y + height > wall.z && newpos.y + height < wall.z + 1.0f) { // Hit underside of wall
 					wishvel.y = 0.0f;
 					touchingCeiling = true;
+					ceilingHeight = wall.z - position.y;
 					newpos.y = wall.z - height;
 				}
 				else if (newpos.y + height + 0.1f >= wall.z) {
 					touchingCeiling = true;
 				}
+			onGround = grounded;
+			if (!touchingCeiling) {
+				ceilingHeight = HUGE_VALF;
 			}
 			onGround = grounded;
 			canUncrouch = !touchingCeiling;
@@ -166,7 +171,7 @@ public:
 		jumping = IsKeyDown(KEY_SPACE);
 	}
 	void updateHeight() {
-		float targetheight = maxHeight;
+		float targetheight = fmin(maxHeight,ceilingHeight);
 		if (crouching) {
 			targetheight = maxHeight - 1.0f;
 		}
@@ -174,11 +179,18 @@ public:
 		if (targetheight < height) { // Height wants to go down
 			height -= fmin(0.1f, height - targetheight);
 		}
-		if (targetheight > height && canUncrouch) { // Height wants to go up
+		if (targetheight > height) { // Height wants to go up
 			height += fmin(0.1f, targetheight - height);
 		}
 	}
 	void update(GameMap* scene) {
+		Vector3 movement = { IsKeyDown(KEY_D) - IsKeyDown(KEY_A), IsKeyDown(KEY_SPACE) - IsKeyDown(KEY_LEFT_CONTROL),IsKeyDown(KEY_W) - IsKeyDown(KEY_S)};
+
+		movement = Vector3Scale(movement, speed);
+		if (noClipping) {
+			noclip(movement);
+		}
+		else {
 		updateState();
 		updateHeight();
 		updateSpeed();
