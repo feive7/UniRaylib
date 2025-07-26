@@ -63,7 +63,12 @@ public:
 			}
 			Vector2* p = wall.points;
 			if (CheckCollisionCircleQuad({ newpos.x,newpos.z }, radius, p[0], p[1], p[2], p[3])) {
-				if (newpos.y <= wall.z + wall.height && newpos.y > wall.z + wall.height - 1.0f) {
+				if (newpos.y <= wall.z + wall.height && newpos.y > wall.z + wall.height - 1.0f) { // Hit top of wall
+					newpos.y = wall.z + wall.height; // Place player on top of wall
+					if (wall.flags & FLAG_BOUNCY) { // Ground is bouncy
+						wishvel.y = -wishvel.y;
+					}
+					else {
 					grounded = true;
 					wishvel.y = 0.0f;
 					newpos.y = wall.z + wall.height;

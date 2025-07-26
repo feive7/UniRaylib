@@ -1,1 +1,2 @@
 #define FLAG_CLIMBABLE 1
+#define FLAG_BOUNCY 2
