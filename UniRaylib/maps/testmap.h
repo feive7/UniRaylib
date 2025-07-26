@@ -1,14 +1,17 @@
 GameMap testmap = {
 	{
-		{0.0f,2.0f,0.0f},
-		{1.0f,2.0f,0.0f},
+		{0.0f,1.0f,0.0f},
+		{0.0f,0.0f,1.0f},
 		{0.0f,2.0f,0.0f},
 		{1.0f,2.0f,0.0f},
 	},
 	{ // Walls
-		{{{-3.05f,10.36f},{15.74f,3.52f},{15.05f,1.64f},{-3.74f,8.48f}},0.0f,2.0f,&tex_rockwall,WHITE,&shader_lighting,0}, // rockwall
-		{{{-15.74f,3.52f},{3.05f,10.36f},{3.74f,8.48f},{-15.05f,1.64f}},0.0f,2.0f,&tex_rockwall,WHITE,&shader_lighting,0}, // rockwall.013
-		{{{-10.0f,10.0f},{10.0f,10.0f},{10.0f,-10.0f},{-10.0f,-10.0f}},-2.0f,2.0f,&tex_stone,WHITE,&shader_lighting,0}, // stone.031
+		{{{-10.0f,10.0f},{10.0f,10.0f},{10.0f,-10.0f},{-10.0f,-10.0f}},-2.0f,2.0f,&tex_stone,WHITE,&shader_lighting,0}, // stone.025
+		{{{7.04f,-9.69f},{-7.04f,-9.69f},{-5.87f,-8.08f},{5.87f,-8.08f}},0.0f,10.0f,&tex_stone,WHITE,&shader_lighting,0}, // stone.026
+		{{{-7.04f,-9.69f},{-11.4f,3.7f},{-9.49f,3.08f},{-5.87f,-8.08f}},0.0f,10.0f,&tex_stone,WHITE,&shader_lighting,0}, // stone.027
+		{{{-11.4f,3.7f},{-0.0f,12.0f},{-0.0f,10.0f},{-9.49f,3.08f}},0.0f,10.0f,&tex_stone,WHITE,&shader_lighting,0}, // stone.028
+		{{{-0.0f,12.0f},{11.39f,3.7f},{9.49f,3.08f},{-0.0f,10.0f}},0.0f,10.0f,&tex_stone,WHITE,&shader_lighting,0}, // stone.029
+		{{{11.39f,3.7f},{7.04f,-9.69f},{5.87f,-8.08f},{9.49f,3.08f}},0.0f,10.0f,&tex_stone,WHITE,&shader_lighting,0}, // stone.030
 	},
 	{ // Signs (WIP)
 	},
@@ -16,6 +19,6 @@ GameMap testmap = {
 	},
 	0.0f, // Ambient lighting
  	{ // Lights
-		{{0.0f,7.0f,0.0f}, 66.31f, {1.0f,1.0f,1.0f}},
+		{{0.0f,8.0f,0.0f}, 28.41f, {1.0f,1.0f,1.0f}},
 	},
 };
