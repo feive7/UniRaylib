@@ -131,12 +131,14 @@ int main(void) {
             BeginMode3D(freecam);
                 MAP.draw();
                 MAP.draw_portals();
-                DrawPlayer(&player);
                 for (int i = 0; i < ballcount; i++) {
                     balls[i].draw(&freecam);
                 }
-                for (int i = 0; i < MAP.lights.size(); i++) {
-                    DrawBillboard(freecam, icon_lightbulb, MAP.lights[i].position, 1.0f, WHITE);
+                if (debug) {
+                    DrawPlayer(&player);
+                    for (int i = 0; i < MAP.lights.size(); i++) {
+                        DrawBillboard(freecam, icon_lightbulb, MAP.lights[i].position, 1.0f, WHITE);
+                    }
                 }
             EndMode3D();
             if (debug) {
