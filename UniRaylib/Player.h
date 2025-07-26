@@ -71,7 +71,6 @@ public:
 					else {
 					grounded = true;
 					wishvel.y = 0.0f;
-					newpos.y = wall.z + wall.height;
 				}
 				}
 				else if (newpos.y + height > wall.z && newpos.y + height < wall.z + 1.0f) { // Hit underside of wall
@@ -80,15 +79,11 @@ public:
 					ceilingHeight = wall.z - position.y;
 					newpos.y = wall.z - height;
 				}
-				else if (newpos.y + height + 0.1f >= wall.z) {
-					touchingCeiling = true;
 				}
 			onGround = grounded;
 			if (!touchingCeiling) {
 				ceilingHeight = HUGE_VALF;
 			}
-			onGround = grounded;
-			canUncrouch = !touchingCeiling;
 		}
 		for (Portal& portal : scene->portals) {
 			Linedef* portal1 = &portal.sectors[0];
@@ -175,7 +170,6 @@ public:
 		if (crouching) {
 			targetheight = maxHeight - 1.0f;
 		}
-		
 		if (targetheight < height) { // Height wants to go down
 			height -= fmin(0.1f, height - targetheight);
 		}
@@ -194,18 +188,10 @@ public:
 		updateState();
 		updateHeight();
 		updateSpeed();
-		Vector3 movement = { IsKeyDown(KEY_D) - IsKeyDown(KEY_A), IsKeyDown(KEY_SPACE) - IsKeyDown(KEY_LEFT_CONTROL),IsKeyDown(KEY_W) - IsKeyDown(KEY_S)};
-
 		if (jumping && onGround) {
 			velocity.y = 0.5f;
 			onGround = false;
 		}
-
-		movement = Vector3Scale(movement, speed);
-		if (noClipping) {
-			noclip(movement);
-		}
-		else {
 			move(movement, scene);
 		}
 	}
