@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <functional>
 #include "raylib.h"
 #include "rcamera.h"
 #include "raymath.h"
@@ -7,8 +8,10 @@
 #include "Extrafunctions.h"
 #include "Textures.h"
 #include "Shaders.h"
+#include "Models.h"
 #include "Lighting.h"
 #include "MapElements.h"
+#include "Ball.h"
 #include "Player.h"
 #include "maps/testmap.h"
 #define MAP testmap
@@ -60,6 +63,7 @@ int main(void) {
 
     InitTextures();
     InitShaders();
+    InitModels();
     MAP.init();
 
     Camera freecam = { 0 };
@@ -67,6 +71,18 @@ int main(void) {
 
     Player player = { 0 };
     ResetPlayer(&player);
+
+    int ballcount = 0;
+    Ball balls[100] = {0};
+
+    TransformableVector3 t({ 0.0f,7.0f,0.0f });
+    t.SetTransformFunction([](Vector3& v) {
+        float t = GetTime();
+        v.x = sin(t) * 3.0f;
+        v.y = sin(t * 3.0f) + 7.0f;
+        v.z = cos(t) * 3.0f;
+        });
+
 
     DisableCursor();
     SetTargetFPS(60);
@@ -76,9 +92,25 @@ int main(void) {
         if (IsKeyPressed(KEY_R)) {
             ResetPlayer(&player);
             ResetCamera(&freecam);
+            memset(&balls, 0, sizeof(balls));
+            ballcount = 0;
         }
         if (IsKeyPressed(KEY_F3)) {
             toggle(debug);
+        }
+        if (IsKeyPressed(KEY_Z)) {
+            balls[ballcount] = { 0 };
+            ballcount --;
+            if (ballcount < 0) ballcount = 0;
+        }
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            balls[ballcount].active = true;
+            balls[ballcount].position = player.headPos();
+            balls[ballcount].color = RandomColor();
+            printC(balls[ballcount].color);
+            balls[ballcount].velocity = Vector3Scale(player.getForward(),RandomFloat(0.2f,0.4f));
+            balls[ballcount].radius = RandomFloat(0.2f,1.0f);
+            ballcount = (ballcount + 1) % 100;
         }
 
         // Game logic
@@ -87,6 +119,12 @@ int main(void) {
         if (IsKeyPressed(KEY_V)) player.noClipping = !player.noClipping;
         if (!IsKeyDown(KEY_TAB)) player.attachCamera(&freecam);
         MAP.renderPortals(&freecam);
+        for (int i = 0; i < ballcount; i++) {
+            balls[i].tick(&MAP);
+        }
+        t.ApplyTransform();
+        MAP.lights[0].position = t.value;
+        UpdateLight(MAP.lights[0]);
         
         BeginDrawing();
             ClearBackground(BLACK); // Clear the background
@@ -94,6 +132,9 @@ int main(void) {
                 MAP.draw();
                 MAP.draw_portals();
                 DrawPlayer(&player);
+                for (int i = 0; i < ballcount; i++) {
+                    balls[i].draw(&freecam);
+                }
                 for (int i = 0; i < MAP.lights.size(); i++) {
                     DrawBillboard(freecam, icon_lightbulb, MAP.lights[i].position, 1.0f, WHITE);
                 }
@@ -104,12 +145,13 @@ int main(void) {
                 AddLine(TextFormat("Player Velocity: %.2f %.2f %.2f", player.velocity.x, player.velocity.y, player.velocity.z));
                 AddLine(TextFormat("Player Height: %.2f", player.height));
                 AddLine(TextFormat("Player OnGround: %i", player.onGround));
-                AddLine(TextFormat("Player Uncrouch: %i", player.canUncrouch));
+                AddLine(TextFormat("Balls: %i", ballcount));
             }
         EndDrawing();
     }
     UnloadTextures();
     UnloadShaders();
+    UnloadModels();
     CloseWindow();
     return 0;
 }

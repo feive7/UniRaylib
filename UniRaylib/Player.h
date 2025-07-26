@@ -69,9 +69,9 @@ public:
 						wishvel.y = -wishvel.y;
 					}
 					else {
-					grounded = true;
-					wishvel.y = 0.0f;
-				}
+						grounded = true;
+						wishvel.y = 0.0f;
+					}
 				}
 				else if (newpos.y + height > wall.z && newpos.y + height < wall.z + 1.0f) { // Hit underside of wall
 					wishvel.y = 0.0f;
@@ -79,7 +79,7 @@ public:
 					ceilingHeight = wall.z - position.y;
 					newpos.y = wall.z - height;
 				}
-				}
+			}
 			onGround = grounded;
 			if (!touchingCeiling) {
 				ceilingHeight = HUGE_VALF;
@@ -185,13 +185,13 @@ public:
 			noclip(movement);
 		}
 		else {
-		updateState();
-		updateHeight();
-		updateSpeed();
-		if (jumping && onGround) {
-			velocity.y = 0.5f;
-			onGround = false;
-		}
+			updateState();
+			updateHeight();
+			updateSpeed();
+			if (jumping && onGround) {
+				velocity.y = 0.5f;
+				onGround = false;
+			}
 			move(movement, scene);
 		}
 	}

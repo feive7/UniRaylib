@@ -41,5 +41,11 @@
     <ClInclude Include="Flags.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Ball.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Models.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

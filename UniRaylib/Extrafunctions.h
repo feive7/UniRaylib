@@ -1,9 +1,32 @@
 #define LETTER_BOUNDRY_SIZE     0.25f
 #define TEXT_MAX_LAYERS         32
 #define LETTER_BOUNDRY_COLOR    VIOLET
+class TransformableVector3 {
+public:
+    Vector3 value;
+
+    // Internal function stored to transform the vector
+    std::function<void(Vector3&)> transformFunction;
+
+    TransformableVector3(Vector3 initial = { 0, 0, 0 }) {
+        value = initial;
+    }
+
+    // Set the transformation logic
+    void SetTransformFunction(std::function<void(Vector3&)> func) {
+        transformFunction = func;
+    }
+
+    // Apply the internal transformation function
+    void ApplyTransform() {
+        if (transformFunction) {
+            transformFunction(value);
+        }
+    }
+};
+
 bool SHOW_LETTER_BOUNDRY = false;
 bool SHOW_TEXT_BOUNDRY = false;
-
 float LineDistance(Vector2 p, Vector2 start, Vector2 end) {
 	Vector2 ab = Vector2Subtract(end, start);
 	Vector2 ap = Vector2Subtract(p, start);

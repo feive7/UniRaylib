@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\rolan\OneDrive\Documents\Roland C++\UniRaylib\UniRaylib\raylib\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\rolan\OneDrive\Documents\Roland C++\UniRaylib\UniRaylib\raylib\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>raylib\include;$(IncludePath)</IncludePath>
+    <LibraryPath>raylib\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\rolan\OneDrive\Documents\Roland C++\UniRaylib\UniRaylib\raylib\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\rolan\OneDrive\Documents\Roland C++\UniRaylib\UniRaylib\raylib\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>raylib\include;$(IncludePath)</IncludePath>
+    <LibraryPath>raylib\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -140,10 +140,12 @@
     <ClCompile Include="UniRaylib.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Ball.h" />
     <ClInclude Include="Flags.h" />
     <ClInclude Include="Lighting.h" />
     <ClInclude Include="MapElements.h" />
     <ClInclude Include="maps\testmap.h" />
+    <ClInclude Include="Models.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="Textures.h" />
