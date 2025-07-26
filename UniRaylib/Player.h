@@ -28,7 +28,7 @@ public:
 	}
 	Vector3 getRight() {
 		Vector3 f = getForward();
-		return { -f.z,0.0f,f.x };
+		return Vector3Normalize({ -f.z,0.0f,f.x });
 	}
 	Vector3 tryMove(Vector3& wishvel, GameMap* scene) {
 		Vector3 oldpos = position;
@@ -108,7 +108,7 @@ public:
 	}
 	void noclip(Vector3 localMovement) {
 		Vector3 forward = getForward();
-		Vector3 right = getRight(); right.y = 0.0f; right = Vector3Normalize(right);
+		Vector3 right = getRight();
 		Vector3 movement = Vector3Scale(forward, localMovement.z) + Vector3Scale({0.0f,1.0f,0.0f}, localMovement.y) + Vector3Scale(right, localMovement.x);
 		position += movement;
 		target = position + forward;
