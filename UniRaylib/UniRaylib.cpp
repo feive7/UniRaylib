@@ -15,6 +15,7 @@
 #include "Player.h"
 #include "maps/testmap.h"
 #define MAP testmap
+#define AXIS_LENGTH 0.05f
 bool debug = true;
 void DrawPortalNormals(Portal* portal) {
     for (int i = 0; i < 2; i++) {
@@ -24,13 +25,17 @@ void DrawPortalNormals(Portal* portal) {
     }
 }
 void DrawPlayer(Player* player) {
-    Vector3 headpos = Vector3Add(player->position, { 0.0f,player->height,0.0f });
+    Vector3 headpos = player->headPos();
+    Vector3 playertop = Vector3Add(player->position, { 0.0f,player->height,0.0f });
     Vector3 aboveFloor = Vector3Add(player->position, { 0.0f,0.01f,0.0f });
-    Vector3 facing = player->getForward(); facing.y = 0.0f; facing = Vector3Normalize(facing);
-    DrawCapsule(player->position, headpos, player->radius, 10, 10, RED);
-    DrawLine3D(aboveFloor, Vector3Add(aboveFloor, Vector3Scale(facing, 2.0f*player->radius)), BLUE);
+    Vector3 forward = player->getForward();
+    DrawCapsule(player->position, playertop, player->radius, 10, 10, RED);
     DrawCircle3D(player->position, player->radius, { 1.0f, 0.0f, 0.0f }, 90.0f, GRAY); // Draw player as a circle on the ground
     DrawCircle3D(player->position + Vector3{ 0.0f,player->height,0.0f }, player->radius, { 1.0f, 0.0f, 0.0f }, 90.0f, GRAY);
+
+    DrawLine3D(headpos + forward, headpos + forward + Vector3{ AXIS_LENGTH, 0.0f, 0.0f }, {255,0,0,255});
+    DrawLine3D(headpos + forward, headpos + forward + Vector3{ 0.0f, AXIS_LENGTH, 0.0f }, { 0,255,0,255 });
+    DrawLine3D(headpos + forward, headpos + forward + Vector3{ 0.0f, 0.0f, AXIS_LENGTH }, {0,0,255,255});
 }
 void ResetCamera(Camera* camera) {
     camera->position = MAP.playerstart.camera_position;  // Camera position
@@ -75,15 +80,6 @@ int main(void) {
     int ballcount = 0;
     Ball balls[100] = {0};
 
-    TransformableVector3 t({ 0.0f,7.0f,0.0f });
-    t.SetTransformFunction([](Vector3& v) {
-        float t = GetTime();
-        v.x = sin(t) * 3.0f;
-        v.y = sin(t * 3.0f) + 7.0f;
-        v.z = cos(t) * 3.0f;
-        });
-
-
     DisableCursor();
     SetTargetFPS(60);
 
@@ -122,9 +118,6 @@ int main(void) {
         for (int i = 0; i < ballcount; i++) {
             balls[i].tick(&MAP);
         }
-        t.ApplyTransform();
-        MAP.lights[0].position = t.value;
-        UpdateLight(MAP.lights[0]);
         
         BeginDrawing();
             ClearBackground(BLACK); // Clear the background
