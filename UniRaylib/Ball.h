@@ -1,4 +1,3 @@
-#include "Flags.h"
 #define GRAVITY 2.0f
 class Ball {
 public:
@@ -8,6 +7,7 @@ public:
 	bool active = false;
 	float radius = 0.5f;
 	void tick(GameMap* scene) {
+		if (position.y < -1000) active = false;
 		if (!active) return;
 		Vector3 wishvel = Vector3Subtract(velocity, {0.0f,GRAVITY*GetFrameTime(),0.0f});
 		Vector3 oldpos = position;
@@ -47,9 +47,14 @@ public:
 			position = newpos;
 		}
 	}
-	void draw(Camera* camera) {
+	void draw3D() {
 		if (!active) return;
-		//DrawBillboard(*camera, tex_ball, position, 1.0f, WHITE);
 		DrawModel(mdl_ball, position, radius, color);
+	}
+	void drawBillboard(Camera* camera) {
+		if (!active) return;
+		DrawBillboard(*camera, tex_ball, position, 1.0f, WHITE);
+		//Vector2 screenpos = GetWorldToScreen(position, *camera);
+		//DrawTexture(tex_ball, screenpos.x, screenpos.y, WHITE);
 	}
 };
