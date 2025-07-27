@@ -221,14 +221,14 @@ public:
 				Vector2 direction = (p2 - p1);
 				Vector2 normal = Vector2Normalize({ -direction.y,direction.x });
 				rlNormal3f(normal.x, 0.0f, normal.y);
-				rlTexCoord2f(0.0f, 0.0f); rlVertex3f(p1.x, wall.z, p1.y);
-				rlTexCoord2f(1.0f, 0.0f); rlVertex3f(p2.x, wall.z, p2.y);
-				rlTexCoord2f(1.0f, 1.0f); rlVertex3f(p2.x, wall.z + wall.height, p2.y);
-				rlTexCoord2f(0.0f, 1.0f); rlVertex3f(p1.x, wall.z + wall.height, p1.y);
-				rlTexCoord2f(0.0f, 1.0f); rlVertex3f(p1.x, wall.z + wall.height, p1.y);
-				rlTexCoord2f(1.0f, 1.0f); rlVertex3f(p2.x, wall.z + wall.height, p2.y);
-				rlTexCoord2f(1.0f, 0.0f); rlVertex3f(p2.x, wall.z, p2.y);
-				rlTexCoord2f(0.0f, 0.0f); rlVertex3f(p1.x, wall.z, p1.y);
+				rlTexCoord2f(0.0f, 1.0f); rlVertex3f(p1.x, wall.z, p1.y);
+				rlTexCoord2f(1.0f, 1.0f); rlVertex3f(p2.x, wall.z, p2.y);
+				rlTexCoord2f(1.0f, 0.0f); rlVertex3f(p2.x, wall.z + wall.height, p2.y);
+				rlTexCoord2f(0.0f, 0.0f); rlVertex3f(p1.x, wall.z + wall.height, p1.y);
+				rlTexCoord2f(0.0f, 0.0f); rlVertex3f(p1.x, wall.z + wall.height, p1.y);
+				rlTexCoord2f(1.0f, 0.0f); rlVertex3f(p2.x, wall.z + wall.height, p2.y);
+				rlTexCoord2f(1.0f, 1.0f); rlVertex3f(p2.x, wall.z, p2.y);
+				rlTexCoord2f(0.0f, 1.0f); rlVertex3f(p1.x, wall.z, p1.y);
 			}
 
 			rlEnd();
