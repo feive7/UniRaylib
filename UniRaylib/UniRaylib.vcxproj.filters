@@ -47,5 +47,8 @@
     <ClInclude Include="Models.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

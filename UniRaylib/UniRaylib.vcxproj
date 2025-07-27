@@ -147,6 +147,7 @@
     <ClInclude Include="maps\testmap.h" />
     <ClInclude Include="Models.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Scripts.h" />
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="Textures.h" />
   </ItemGroup>
