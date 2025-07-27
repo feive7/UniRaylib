@@ -9,6 +9,8 @@ Texture tex_brick;
 Texture tex_stone;
 Texture tex_lava;
 Texture tex_ball;
+Texture tex_checker;
+Texture tex_mark;
 Texture tex_error;
 
 Texture icon_lightbulb;
@@ -25,6 +27,8 @@ void InitTextures() {
 	tex_stone = LoadTexture("assets/textures/tex_stone.jpg");
 	tex_lava = LoadTexture("assets/textures/tex_lava.png");
 	tex_ball = LoadTexture("assets/textures/tex_ball.png");
+	tex_checker = LoadTexture("assets/textures/tex_checker.png");
+	tex_mark = LoadTexture("assets/textures/tex_mark.png");
 	tex_error = LoadTexture("assets/textures/tex_error.png");
 
 	icon_lightbulb = LoadTexture("assets/textures/icon_lightbulb.png");
@@ -41,6 +45,8 @@ void UnloadTextures() {
 	UnloadTexture(tex_stone);
 	UnloadTexture(tex_lava); 
 	UnloadTexture(tex_ball);
+	UnloadTexture(tex_checker);
+	UnloadTexture(tex_mark);
 	UnloadTexture(tex_error);
 
 	UnloadTexture(icon_lightbulb);

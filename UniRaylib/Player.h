@@ -1,4 +1,3 @@
-#include "Flags.h"
 #define MOUSE_SENSITIVITY 100
 #define CAMERA_MODE_FIRST_PERSON 1
 #define GRAVITY 2.0f

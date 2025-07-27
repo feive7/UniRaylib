@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <functional>
+#include <algorithm>
+#include "Flags.h"
 #include "raylib.h"
 #include "rcamera.h"
 #include "raymath.h"
@@ -77,8 +79,7 @@ int main(void) {
     Player player = { 0 };
     ResetPlayer(&player);
 
-    int ballcount = 0;
-    Ball balls[100] = {0};
+    std::vector<Ball> balls;
 
     DisableCursor();
     SetTargetFPS(60);
@@ -88,25 +89,23 @@ int main(void) {
         if (IsKeyPressed(KEY_R)) {
             ResetPlayer(&player);
             ResetCamera(&freecam);
-            memset(&balls, 0, sizeof(balls));
-            ballcount = 0;
+            balls.clear();
         }
         if (IsKeyPressed(KEY_F3)) {
             toggle(debug);
         }
         if (IsKeyPressed(KEY_Z)) {
-            balls[ballcount] = { 0 };
-            ballcount --;
-            if (ballcount < 0) ballcount = 0;
+            if(balls.size())
+                balls.pop_back();
         }
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            balls[ballcount].active = true;
-            balls[ballcount].position = player.headPos();
-            balls[ballcount].color = RandomColor();
-            printC(balls[ballcount].color);
-            balls[ballcount].velocity = Vector3Scale(player.getForward(),RandomFloat(0.2f,0.4f));
-            balls[ballcount].radius = RandomFloat(0.2f,1.0f);
-            ballcount = (ballcount + 1) % 100;
+            Ball newball;
+            newball.active = true;
+            newball.position = player.headPos();
+            newball.velocity = player.getForward() * 0.5f;
+            newball.radius = RandomFloat(0.2,1.0f);
+            newball.color = RandomColor();
+            balls.push_back(newball);
         }
 
         // Game logic
@@ -115,8 +114,12 @@ int main(void) {
         if (IsKeyPressed(KEY_V)) player.noClipping = !player.noClipping;
         if (!IsKeyDown(KEY_TAB)) player.attachCamera(&freecam);
         MAP.renderPortals(&freecam);
-        for (int i = 0; i < ballcount; i++) {
-            balls[i].tick(&MAP);
+        for (Ball& ball : balls) {
+            ball.tick(&MAP);
+            if (!ball.active) {
+                std::swap(balls[balls.size() - 1], ball);
+                balls.pop_back();
+            }
         }
         
         BeginDrawing();
@@ -124,8 +127,8 @@ int main(void) {
             BeginMode3D(freecam);
                 MAP.draw();
                 MAP.draw_portals();
-                for (int i = 0; i < ballcount; i++) {
-                    balls[i].draw(&freecam);
+                for (Ball& ball : balls) {
+                    ball.draw3D();
                 }
                 if (debug) {
                     DrawPlayer(&player);
@@ -140,7 +143,7 @@ int main(void) {
                 AddLine(TextFormat("Player Velocity: %.2f %.2f %.2f", player.velocity.x, player.velocity.y, player.velocity.z));
                 AddLine(TextFormat("Player Height: %.2f", player.height));
                 AddLine(TextFormat("Player OnGround: %i", player.onGround));
-                AddLine(TextFormat("Balls: %i", ballcount));
+                AddLine(TextFormat("Balls: %i", balls.size()));
             }
         EndDrawing();
     }

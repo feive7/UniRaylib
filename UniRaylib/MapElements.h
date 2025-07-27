@@ -186,6 +186,8 @@ public:
 	std::vector<Light> lights;
 	void draw() {
 		for (Wall& wall : walls) {
+			if (wall.flags & FLAG_INVIS)
+				continue;
 			Vector2* points = wall.points;
 
 			BeginShaderMode(*wall.shader);
