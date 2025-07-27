@@ -1,2 +1,5 @@
-#define FLAG_CLIMBABLE 1
-#define FLAG_BOUNCY 2
+enum WallFlags {
+	FLAG_CLIMBABLE = 1,
+	FLAG_BOUNCY = 2,
+	FLAG_INVIS = 4,
+};
