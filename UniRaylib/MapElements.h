@@ -186,7 +186,7 @@ public:
 	std::vector<Light> lights;
 	void draw() {
 		for (Wall& wall : walls) {
-			if (wall.flags & FLAG_INVIS)
+			if (wall.flags & WALL_INVIS)
 				continue;
 			Vector2* points = wall.points;
 

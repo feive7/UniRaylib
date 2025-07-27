@@ -54,7 +54,7 @@ public:
 
 					touchingWall = true;
 
-					if (wall.flags & FLAG_CLIMBABLE) {
+					if (wall.flags & WALL_CLIMBABLE) {
 						newpos.y += 0.01f;
 						wishvel.y = 0.3f;
 					}
@@ -64,7 +64,7 @@ public:
 			if (CheckCollisionCircleQuad({ newpos.x,newpos.z }, radius, p[0], p[1], p[2], p[3])) {
 				if (newpos.y <= wall.z + wall.height && newpos.y > wall.z + wall.height - 1.0f) { // Hit top of wall
 					newpos.y = wall.z + wall.height; // Place player on top of wall
-					if (wall.flags & FLAG_BOUNCY) { // Ground is bouncy
+					if (wall.flags & WALL_BOUNCY) { // Ground is bouncy
 						wishvel.y = -wishvel.y;
 					}
 					else {

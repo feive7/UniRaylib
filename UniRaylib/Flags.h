@@ -1,5 +1,5 @@
 enum WallFlags {
-	FLAG_CLIMBABLE = 1,
-	FLAG_BOUNCY = 2,
-	FLAG_INVIS = 4,
+	WALL_CLIMBABLE = 1,
+	WALL_BOUNCY = 2,
+	WALL_INVIS = 4,
 };
