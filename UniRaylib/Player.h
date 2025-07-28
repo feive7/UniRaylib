@@ -181,6 +181,7 @@ public:
 
 		movement = Vector3Scale(movement, speed);
 		if (noClipping) {
+			velocity = { 0.0f,0.0f,0.0f };
 			noclip(movement);
 		}
 		else {
