@@ -18,6 +18,7 @@ public:
 	bool sprinting = false;
 	bool noClipping = false;
 	float ceilingHeight;
+	Vector3 targetPos;
 
 	Vector3 headPos() {
 		return Vector3Add(position, { 0.0f,height - 1.0f,0.0f });
@@ -30,6 +31,11 @@ public:
 		return Vector3Normalize({ -f.z,0.0f,f.x });
 	}
 	Vector3 tryMove(Vector3& wishvel, GameMap* scene) {
+		Ray targetRay;
+		targetRay.position = headPos();
+		targetRay.direction = getForward();
+		float rayDistance = INFINITY;
+
 		Vector3 oldpos = position;
 		Vector3 newpos = position + wishvel;
 		bool grounded = false;
@@ -59,6 +65,13 @@ public:
 						wishvel.y = 0.3f;
 					}
 				}
+				RayCollision c = GetRayCollisionQuad(targetRay, { A.x,wall.z,A.y }, { B.x,wall.z,B.y }, { B.x,wall.z + wall.height,B.y }, { A.x,wall.z + wall.height,A.y });
+				if (c.hit) {
+					if (c.distance < rayDistance) {
+						rayDistance = c.distance;
+						targetPos = c.point;
+					}
+				}
 			}
 			Vector2* p = wall.points;
 			if (CheckCollisionCircleQuad({ newpos.x,newpos.z }, radius, p[0], p[1], p[2], p[3])) {
@@ -77,6 +90,20 @@ public:
 					touchingCeiling = true;
 					ceilingHeight = wall.z - position.y;
 					newpos.y = wall.z - height;
+				}
+				RayCollision c1 = GetRayCollisionQuad(targetRay, { p[0].x,wall.z,p[0].y }, { p[1].x,wall.z,p[1].y }, { p[2].x,wall.z,p[2].y }, { p[3].x,wall.z,p[3].y });
+				RayCollision c2 = GetRayCollisionQuad(targetRay, { p[0].x,wall.z + wall.height,p[0].y }, { p[1].x,wall.z + wall.height,p[1].y }, {p[2].x,wall.z + wall.height,p[2].y},{p[3].x,wall.z + wall.height,p[3].y});
+				if (c1.hit) {
+					if (c1.distance < rayDistance) {
+						rayDistance = c1.distance;
+						targetPos = c1.point;
+					}
+				}
+				if (c2.hit) {
+					if (c2.distance < rayDistance) {
+						rayDistance = c2.distance;
+						targetPos = c2.point;
+					}
 				}
 			}
 			onGround = grounded;
