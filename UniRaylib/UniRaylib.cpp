@@ -138,7 +138,8 @@ int main(void) {
                 }
             EndMode3D();
             if (debug) {
-                AddLine(TextFormat("Player Position: %.2f %.2f %.2f", player.position.x, player.position.y, player.position.z), true);
+                AddLine(TextFormat("FPS: %i", GetFPS()), true);
+                AddLine(TextFormat("Player Position: %.2f %.2f %.2f", player.position.x, player.position.y, player.position.z));
                 AddLine(TextFormat("Player Target: %.2f %.2f %.2f", player.target.x, player.target.y, player.target.z));
                 AddLine(TextFormat("Player Velocity: %.2f %.2f %.2f", player.velocity.x, player.velocity.y, player.velocity.z));
                 AddLine(TextFormat("Player Height: %.2f", player.height));
