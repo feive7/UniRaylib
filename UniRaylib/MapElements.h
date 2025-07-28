@@ -79,6 +79,7 @@ public:
 	Texture* texture;
 	Color tint;
 	Shader* shader;
+	int group;
 	int flags = 0;
 };
 class Portal {
