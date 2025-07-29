@@ -144,7 +144,7 @@ int main(void) {
                 AddLine(TextFormat("Player Velocity: %.2f %.2f %.2f", player.velocity.x, player.velocity.y, player.velocity.z));
                 AddLine(TextFormat("Player Height: %.2f", player.height));
                 AddLine(TextFormat("Player OnGround: %i", player.onGround));
-                AddLine(TextFormat("Balls: %i", balls.size()));
+                AddLine(TextFormat("Map Objects: %i", MAP.walls.size()));
             }
         EndDrawing();
     }

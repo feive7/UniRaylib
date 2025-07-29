@@ -81,6 +81,15 @@ public:
 	Shader* shader;
 	int group;
 	int flags = 0;
+	float textureSize = 1.0f;
+	float area() const { // unused
+		Vector2 a = points[0];
+		Vector2 b = points[1];
+		Vector2 c = points[2];
+		Vector2 d = points[3];
+		return fabsf((a.x * (b.y - d.y) + b.x * (c.y - a.y) + c.x * (d.y - b.y) + d.x * (a.y - c.y)) / 2.0f);
+	
+	}
 };
 class Portal {
 public:
@@ -198,22 +207,22 @@ public:
 
 			rlNormal3f(0.0f, -1.0f, 0.0f);
 			rlTexCoord2f(0.0f, 0.0f); rlVertex3f(points[0].x, wall.z, points[0].y);
-			rlTexCoord2f(1.0f, 0.0f); rlVertex3f(points[1].x, wall.z, points[1].y);
-			rlTexCoord2f(1.0f, 1.0f); rlVertex3f(points[2].x, wall.z, points[2].y);
-			rlTexCoord2f(0.0f, 1.0f); rlVertex3f(points[3].x, wall.z, points[3].y);
-			rlTexCoord2f(0.0f, 1.0f); rlVertex3f(points[3].x, wall.z, points[3].y);
-			rlTexCoord2f(1.0f, 1.0f); rlVertex3f(points[2].x, wall.z, points[2].y);
-			rlTexCoord2f(1.0f, 0.0f); rlVertex3f(points[1].x, wall.z, points[1].y);
+			rlTexCoord2f(wall.textureSize, 0.0f); rlVertex3f(points[1].x, wall.z, points[1].y);
+			rlTexCoord2f(wall.textureSize, wall.textureSize); rlVertex3f(points[2].x, wall.z, points[2].y);
+			rlTexCoord2f(0.0f, wall.textureSize); rlVertex3f(points[3].x, wall.z, points[3].y);
+			rlTexCoord2f(0.0f, wall.textureSize); rlVertex3f(points[3].x, wall.z, points[3].y);
+			rlTexCoord2f(wall.textureSize, wall.textureSize); rlVertex3f(points[2].x, wall.z, points[2].y);
+			rlTexCoord2f(wall.textureSize, 0.0f); rlVertex3f(points[1].x, wall.z, points[1].y);
 			rlTexCoord2f(0.0f, 0.0f); rlVertex3f(points[0].x, wall.z, points[0].y);
 
 			rlNormal3f(0.0f, 1.0f, 0.0f);
 			rlTexCoord2f(0.0f, 0.0f); rlVertex3f(points[0].x, wall.z + wall.height, points[0].y);
-			rlTexCoord2f(1.0f, 0.0f); rlVertex3f(points[1].x, wall.z + wall.height, points[1].y);
-			rlTexCoord2f(1.0f, 1.0f); rlVertex3f(points[2].x, wall.z + wall.height, points[2].y);
-			rlTexCoord2f(0.0f, 1.0f); rlVertex3f(points[3].x, wall.z + wall.height, points[3].y);
-			rlTexCoord2f(0.0f, 1.0f); rlVertex3f(points[3].x, wall.z + wall.height, points[3].y);
-			rlTexCoord2f(1.0f, 1.0f); rlVertex3f(points[2].x, wall.z + wall.height, points[2].y);
-			rlTexCoord2f(1.0f, 0.0f); rlVertex3f(points[1].x, wall.z + wall.height, points[1].y);
+			rlTexCoord2f(wall.textureSize, 0.0f); rlVertex3f(points[1].x, wall.z + wall.height, points[1].y);
+			rlTexCoord2f(wall.textureSize, wall.textureSize); rlVertex3f(points[2].x, wall.z + wall.height, points[2].y);
+			rlTexCoord2f(0.0f, wall.textureSize); rlVertex3f(points[3].x, wall.z + wall.height, points[3].y);
+			rlTexCoord2f(0.0f, wall.textureSize); rlVertex3f(points[3].x, wall.z + wall.height, points[3].y);
+			rlTexCoord2f(wall.textureSize, wall.textureSize); rlVertex3f(points[2].x, wall.z + wall.height, points[2].y);
+			rlTexCoord2f(wall.textureSize, 0.0f); rlVertex3f(points[1].x, wall.z + wall.height, points[1].y);
 			rlTexCoord2f(0.0f, 0.0f); rlVertex3f(points[0].x, wall.z + wall.height, points[0].y);
 
 			for (int i = 0; i < 4; i++) {
