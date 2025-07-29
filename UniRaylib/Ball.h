@@ -1,4 +1,5 @@
 #define GRAVITY 2.0f
+#define BOUNCE false
 class Ball {
 public:
 	Vector3 position;
@@ -33,14 +34,26 @@ public:
 			Vector2* p = wall.points;
 			if (CheckCollisionCircleQuad({ newpos.x,newpos.z }, radius, p[0], p[1], p[2], p[3])) {
 				if (newpos.y - radius < wall.z + wall.height && newpos.y - radius > wall.z + wall.height - 1.0f) { // Hit top of wall
-					float distanceIn = wall.z + wall.height - newpos.y + radius;
-					newpos.y = wall.z + wall.height + radius + distanceIn; // Place ball on top of wall
-					wishvel.y = -wishvel.y;
+					if (BOUNCE) {
+						float distanceIn = wall.z + wall.height - newpos.y + radius;
+						newpos.y = wall.z + wall.height + radius + distanceIn; // Place ball on top of wall
+						wishvel.y = -wishvel.y;
+					}
+					else {
+						wishvel.y = 0.0f;
+						newpos.y = wall.z + wall.height + radius; // Place ball on top of wall without bouncing
+					}
 				}
 				else if (newpos.y + radius > wall.z && newpos.y + radius < wall.z + 1.0f) { // Hit underside of wall
-					float distanceIn = wall.z - newpos.y + radius;
-					newpos.y = wall.z - radius;
-					wishvel.y = -wishvel.y;
+					if (BOUNCE) {
+						float distanceIn = wall.z - newpos.y + radius;
+						newpos.y = wall.z - radius;
+						wishvel.y = -wishvel.y;
+					}
+					else {
+						wishvel.y = 0.0f;
+						newpos.y = wall.z - radius; // Place ball under wall without bouncing
+					}
 				}
 			}
 			velocity = wishvel;
