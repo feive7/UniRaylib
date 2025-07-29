@@ -259,7 +259,7 @@ public:
 				BeginTextureMode(portal.RTextures[i]);
 				ClearBackground(BLACK); // Clear the background
 				BeginMode3D(portal.RTCameras[i]);
-				draw();
+				draw(true, shaders[current_shader]);
 				EndMode3D();
 				EndTextureMode();
 			}
