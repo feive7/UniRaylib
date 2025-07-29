@@ -150,6 +150,17 @@
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="Textures.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\checker.fs" />
+    <None Include="assets\shaders\defaultShader.vs" />
+    <None Include="assets\shaders\lighting.vs" />
+    <None Include="assets\shaders\lighting1.fs" />
+    <None Include="assets\shaders\lighting2.fs" />
+    <None Include="assets\shaders\test.fs" />
+    <None Include="assets\shaders\test.vs" />
+    <None Include="assets\shaders\window.fs" />
+    <None Include="assets\shaders\window.vs" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
