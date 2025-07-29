@@ -1,3 +1,24 @@
+#version 330
+
+// Input vertex attributes (from vertex shader)
+in vec2 fragTexCoord;
+in vec4 fragColor;
+in vec3 fragPosition;
+in vec3 fragNormal;
+
+struct LightPortal {
+    vec3 pos1;
+    vec3 pos2;
+};
+struct Light {
+    vec3 position;
+    float power;
+    vec3 color;
+};
+
+// Input uniform values
+uniform sampler2D texture0;
+uniform vec4 colDiffuse;
 uniform float ambientLight;
 uniform Light lights[10];
 uniform LightPortal lightPortals[10];

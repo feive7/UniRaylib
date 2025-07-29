@@ -79,6 +79,8 @@ int main(void) {
     Player player = { 0 };
     ResetPlayer(&player);
 
+    int id = GetShaderLocation(shader_lighting, "viewPos");
+
     std::vector<Ball> balls;
 
     DisableCursor();
@@ -90,6 +92,9 @@ int main(void) {
             ResetPlayer(&player);
             ResetCamera(&freecam);
             balls.clear();
+        }
+        if (IsKeyPressed(KEY_F1)) {
+            current_shader = (current_shader + 1) % shader_count;
         }
         if (IsKeyPressed(KEY_F3)) {
             toggle(debug);
@@ -121,11 +126,12 @@ int main(void) {
                 balls.pop_back();
             }
         }
+        SetShaderValue(shader_lighting, id, &freecam.position, SHADER_UNIFORM_VEC3);
         
         BeginDrawing();
             ClearBackground(BLACK); // Clear the background
             BeginMode3D(freecam);
-                MAP.draw();
+                MAP.draw(true,shaders[current_shader]);
                 MAP.draw_portals();
                 for (Ball& ball : balls) {
                     ball.draw3D();

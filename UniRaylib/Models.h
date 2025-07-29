@@ -1,6 +1,6 @@
 Model mdl_ball;
 void InitModels() {
-	mdl_ball = LoadModelFromMesh(GenMeshSphere(1.0f, 10, 10)); mdl_ball.materials[0].shader = shader_lighting1;
+	mdl_ball = LoadModelFromMesh(GenMeshSphere(1.0f, 10, 10)); mdl_ball.materials[0].shader = shader_lighting;
 }
 void UnloadModels() {
 	UnloadModel(mdl_ball);
