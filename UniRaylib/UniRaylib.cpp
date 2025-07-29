@@ -154,6 +154,7 @@ int main(void) {
             AddLine(TextFormat("Player Height: %.2f", player.height));
             AddLine(TextFormat("Player OnGround: %i", player.onGround));
             AddLine(TextFormat("Map Objects: %i", MAP.walls.size()));
+            AddLine(TextFormat("Shader: %s", shader_names[current_shader].c_str()));
         }
         else {
             DrawCircle(GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f, 3.0f, WHITE); // Crosshair in the center of the screen

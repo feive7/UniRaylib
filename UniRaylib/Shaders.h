@@ -5,6 +5,7 @@ Shader shader_lighting;
 
 int current_shader = 0;
 Shader* shaders[] = {&shader_none,&shader_lighting,&shader_test};
+std::string shader_names[] = {"None","Lighting","Test"};
 const int shader_count = sizeof(shaders) / sizeof(Shader*);
 void InitShaders() {
 	shader_none = LoadShader("assets/shaders/base.vs", "assets/shaders/base.fs");
