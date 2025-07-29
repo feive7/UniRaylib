@@ -65,6 +65,7 @@ void main() {
         //lighting += (light.power / Vec3Distance(light.position - offset, fragPosition));
     }
     finalColor = (texelColor*((tint + vec4(specular, 1.0))*vec4(lightDot, 1.0)));
+    finalColor += texelColor*(ambientLight/10.0)*tint;
 
     finalColor = pow(finalColor, vec4(1.0/2.2));
 }
