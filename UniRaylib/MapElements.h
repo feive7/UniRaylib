@@ -194,13 +194,12 @@ public:
 	std::vector<Portal> portals;
 	float ambientLight;
 	std::vector<Light> lights;
-	void draw() {
+	void draw(bool override_shader = false, Shader* shader_override = {}) {
 		for (Wall& wall : walls) {
 			if (wall.flags & WALL_INVIS)
 				continue;
 			Vector2* points = wall.points;
-
-			BeginShaderMode(*wall.shader);
+			BeginShaderMode(override_shader ? *shader_override : *wall.shader);
 			rlBegin(RL_QUADS);
 			rlColor4ub(wall.tint.r,wall.tint.g,wall.tint.b,wall.tint.a);
 			rlSetTexture(wall.texture->id);

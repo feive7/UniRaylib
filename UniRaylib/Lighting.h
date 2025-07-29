@@ -20,22 +20,22 @@ static int lightPortalsCount = 0;
 static int ambientLight_loc;
 
 void UpdateLight(Light light) {
-	SetShaderValue(shader_lighting, light.position_loc, &light.position, SHADER_UNIFORM_VEC3);
-	SetShaderValue(shader_lighting, light.power_loc, &light.power, SHADER_UNIFORM_FLOAT);
-	SetShaderValue(shader_lighting, light.color_loc, &light.color, SHADER_UNIFORM_VEC3);
+	SetShaderValue(shader_lighting1, light.position_loc, &light.position, SHADER_UNIFORM_VEC3);
+	SetShaderValue(shader_lighting1, light.power_loc, &light.power, SHADER_UNIFORM_FLOAT);
+	SetShaderValue(shader_lighting1, light.color_loc, &light.color, SHADER_UNIFORM_VEC3);
 }
 void UpdateLightPortal(LightPortal lp) {
-	SetShaderValue(shader_lighting, lp.pos1_loc, &lp.pos1, SHADER_UNIFORM_VEC3);
-	SetShaderValue(shader_lighting, lp.pos2_loc, &lp.pos2, SHADER_UNIFORM_VEC3);
+	SetShaderValue(shader_lighting1, lp.pos1_loc, &lp.pos1, SHADER_UNIFORM_VEC3);
+	SetShaderValue(shader_lighting1, lp.pos2_loc, &lp.pos2, SHADER_UNIFORM_VEC3);
 }
 Light CreateLight(Vector3 position, float power, Vector3 color) {
 	Light light = { 0 };
 	light.position = position;
 	light.power = power;
 	light.color = color;
-	light.position_loc = GetShaderLocation(shader_lighting, TextFormat("lights[%i].position", lightsCount));
-	light.power_loc = GetShaderLocation(shader_lighting, TextFormat("lights[%i].power", lightsCount));
-	light.color_loc = GetShaderLocation(shader_lighting, TextFormat("lights[%i].color", lightsCount));
+	light.position_loc = GetShaderLocation(shader_lighting1, TextFormat("lights[%i].position", lightsCount));
+	light.power_loc = GetShaderLocation(shader_lighting1, TextFormat("lights[%i].power", lightsCount));
+	light.color_loc = GetShaderLocation(shader_lighting1, TextFormat("lights[%i].color", lightsCount));
 	lightsCount++;
 	UpdateLight(light);
 	return light;
@@ -44,14 +44,14 @@ LightPortal CreateLightPortal(Vector3 pos1, Vector3 pos2) {
 	LightPortal lp = { 0 };
 	lp.pos1 = pos1;
 	lp.pos2 = pos2;
-	lp.pos1_loc = GetShaderLocation(shader_lighting, TextFormat("lightPortals[%i].pos1", lightPortalsCount));
-	lp.pos2_loc = GetShaderLocation(shader_lighting, TextFormat("lightPortals[%i].pos2", lightPortalsCount));
+	lp.pos1_loc = GetShaderLocation(shader_lighting1, TextFormat("lightPortals[%i].pos1", lightPortalsCount));
+	lp.pos2_loc = GetShaderLocation(shader_lighting1, TextFormat("lightPortals[%i].pos2", lightPortalsCount));
 	lightPortalsCount++;
 	UpdateLightPortal(lp); 
 	return lp;
 }
 void SetAmbientLight(float lightness) {
 	if (!ambientLight_loc)
-		ambientLight_loc = GetShaderLocation(shader_lighting, "ambientLight");
-	SetShaderValue(shader_lighting, ambientLight_loc, &lightness, SHADER_UNIFORM_FLOAT);
+		ambientLight_loc = GetShaderLocation(shader_lighting1, "ambientLight");
+	SetShaderValue(shader_lighting1, ambientLight_loc, &lightness, SHADER_UNIFORM_FLOAT);
 }

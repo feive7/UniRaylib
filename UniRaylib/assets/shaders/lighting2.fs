@@ -22,6 +22,7 @@ uniform vec4 colDiffuse;
 uniform float ambientLight;
 uniform Light lights[10];
 uniform LightPortal lightPortals[10];
+uniform vec3 viewPos;
 
 // Output fragment color
 out vec4 finalColor;
@@ -39,25 +40,31 @@ float Vec3Distance(vec3 a, vec3 b) {
 }
 void main() {
     vec4 texelColor = texture(texture0, fragTexCoord);
+
+    vec3 lightDot = vec3(0.0);
+    vec3 normal = normalize(fragNormal);
+    vec3 viewD = normalize(viewPos - fragPosition);
+    vec3 specular = vec3(0.0);
+
+    vec4 tint = colDiffuse * fragColor;
+
     vec3 lighting = vec3(0);
     for (int i = 0; i < 10; i++) {
-        Light light = lights[i];
-        
-        vec3 lightDir = normalize(light.position - fragPosition); // Correct light direction
+        vec3 light = vec3(0.0);
+        light = normalize(lights[i].position - fragPosition);
 
-        float distance = Vec3DistanceSqr(light.position,fragPosition);
-        float attenuation = max(0.0,light.power / distance);
+        float NdotL = max(dot(fragNormal, light),0.0);
+        lightDot += lights[i].color.rgb*NdotL;
 
-        float NdotL = max(dot(fragNormal, lightDir),0.0);
-        
-        lighting += light.color * attenuation * NdotL;
-
+        float specCo = 0.0;
+        if (NdotL > 0.0) specCo = pow(max(0.0, dot(viewD, reflect(-(light), normal))), 16.0); // 16 refers to shine
+        specular += specCo;
         // Portal light calculation
         //vec3 offset = lightPortals[0].pos2 - lightPortals[0].pos1;
         //lighting += (light.power / Vec3Distance(light.position + offset, fragPosition));
         //lighting += (light.power / Vec3Distance(light.position - offset, fragPosition));
     }
-    lighting = max(vec3(ambientLight,ambientLight,ambientLight),lighting);
-    finalColor = texelColor*colDiffuse*fragColor;
-    finalColor.rgb *= lighting;
+    finalColor = (texelColor*((tint + vec4(specular, 1.0))*vec4(lightDot, 1.0)));
+
+    finalColor = pow(finalColor, vec4(1.0/2.2));
 }
