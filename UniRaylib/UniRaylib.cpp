@@ -79,7 +79,8 @@ int main(void) {
     Player player = { 0 };
     ResetPlayer(&player);
 
-    int id = GetShaderLocation(shader_lighting, "viewPos");
+    int viewpos_test = GetShaderLocation(shader_test, "viewPos");
+    int viewpos_lighting = GetShaderLocation(shader_lighting, "viewPos");
 
     std::vector<Ball> balls;
 
@@ -88,33 +89,34 @@ int main(void) {
 
     while (!WindowShouldClose()) {
         // Keyboard input handling
-        if (IsKeyPressed(KEY_R)) {
+        if (IsKeyPressed(KEY_R)) { // Reset game
             ResetPlayer(&player);
             ResetCamera(&freecam);
             balls.clear();
         }
-        if (IsKeyPressed(KEY_F1)) {
+        if (IsKeyPressed(KEY_F1)) { // Switch to next shader
             current_shader = (current_shader + 1) % shader_count;
+            mdl_ball.materials[0].shader = *shaders[current_shader];
         }
-        if (IsKeyPressed(KEY_F3)) {
+        if (IsKeyPressed(KEY_F3)) { // Toggle debug info
             toggle(debug);
         }
-        if (IsKeyPressed(KEY_Z)) {
-            if(balls.size())
+        if (IsKeyPressed(KEY_Z)) { // Undo last ball
+            if (balls.size())
                 balls.pop_back();
         }
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) { // Throw a ball
             Ball newball;
             newball.active = true;
             newball.position = player.headPos();
             newball.velocity = player.getForward() * 0.5f;
-            newball.radius = RandomFloat(0.2,1.0f);
+            newball.radius = RandomFloat(0.2, 1.0f);
             newball.color = RandomColor();
             balls.push_back(newball);
         }
 
         // Game logic
-        UpdateCameraScene(&freecam,&MAP);
+        UpdateCameraScene(&freecam, &MAP);
         player.update(&MAP);
         if (IsKeyPressed(KEY_V)) player.noClipping = !player.noClipping;
         if (!IsKeyDown(KEY_TAB)) player.attachCamera(&freecam);
@@ -126,32 +128,36 @@ int main(void) {
                 balls.pop_back();
             }
         }
-        SetShaderValue(shader_lighting, id, &freecam.position, SHADER_UNIFORM_VEC3);
-        
+        SetShaderValue(shader_lighting, viewpos_lighting, &freecam.position, SHADER_UNIFORM_VEC3);
+        SetShaderValue(shader_test, viewpos_test, &freecam.position, SHADER_UNIFORM_VEC3);
+
         BeginDrawing();
-            ClearBackground(BLACK); // Clear the background
-            BeginMode3D(freecam);
-                MAP.draw(true,shaders[current_shader]);
-                MAP.draw_portals();
-                for (Ball& ball : balls) {
-                    ball.draw3D();
-                }
-                if (debug) {
-                    DrawPlayer(&player);
-                    for (int i = 0; i < MAP.lights.size(); i++) {
-                        DrawBillboard(freecam, icon_lightbulb, MAP.lights[i].position, 1.0f, WHITE);
-                    }
-                }
-            EndMode3D();
-            if (debug) {
-                AddLine(TextFormat("FPS: %i", GetFPS()), true);
-                AddLine(TextFormat("Player Position: %.2f %.2f %.2f", player.position.x, player.position.y, player.position.z));
-                AddLine(TextFormat("Player Target: %.2f %.2f %.2f", player.target.x, player.target.y, player.target.z));
-                AddLine(TextFormat("Player Velocity: %.2f %.2f %.2f", player.velocity.x, player.velocity.y, player.velocity.z));
-                AddLine(TextFormat("Player Height: %.2f", player.height));
-                AddLine(TextFormat("Player OnGround: %i", player.onGround));
-                AddLine(TextFormat("Map Objects: %i", MAP.walls.size()));
+        ClearBackground(BLACK); // Clear the background
+        BeginMode3D(freecam);
+        MAP.draw(true, shaders[current_shader]);
+        MAP.draw_portals();
+        for (Ball& ball : balls) {
+            ball.draw3D();
+        }
+        if (debug) {
+            DrawPlayer(&player);
+            for (int i = 0; i < MAP.lights.size(); i++) {
+                DrawBillboard(freecam, icon_lightbulb, MAP.lights[i].position, 1.0f, WHITE);
             }
+        }
+        EndMode3D();
+        if (debug) {
+            AddLine(TextFormat("FPS: %i", GetFPS()), true);
+            AddLine(TextFormat("Player Position: %.2f %.2f %.2f", player.position.x, player.position.y, player.position.z));
+            AddLine(TextFormat("Player Target: %.2f %.2f %.2f", player.target.x, player.target.y, player.target.z));
+            AddLine(TextFormat("Player Velocity: %.2f %.2f %.2f", player.velocity.x, player.velocity.y, player.velocity.z));
+            AddLine(TextFormat("Player Height: %.2f", player.height));
+            AddLine(TextFormat("Player OnGround: %i", player.onGround));
+            AddLine(TextFormat("Map Objects: %i", MAP.walls.size()));
+        }
+        else {
+            DrawCircle(GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f, 3.0f, WHITE); // Crosshair in the center of the screen
+        }
         EndDrawing();
     }
     UnloadTextures();
