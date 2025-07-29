@@ -1,20 +1,20 @@
 Shader shader_none;
-Shader shader_test;
+Shader shader_darkness;
 Shader shader_window;
 Shader shader_lighting;
 
 int current_shader = 0;
-Shader* shaders[] = {&shader_none,&shader_lighting,&shader_test};
+Shader* shaders[] = {&shader_none,&shader_lighting,&shader_darkness};
 std::string shader_names[] = {"None","Lighting","Test"};
 const int shader_count = sizeof(shaders) / sizeof(Shader*);
 void InitShaders() {
 	shader_none = LoadShader("assets/shaders/base.vs", "assets/shaders/base.fs");
-	shader_test = LoadShader("assets/shaders/test.vs", "assets/shaders/test.fs");
+	shader_darkness = LoadShader("assets/shaders/darkness.vs", "assets/shaders/darkness.fs");
 	shader_window = LoadShader("assets/shaders/window.vs", "assets/shaders/window.fs");
 	shader_lighting = LoadShader("assets/shaders/lighting.vs", "assets/shaders/lighting2.fs");
 }
 void UnloadShaders() {
-	UnloadShader(shader_test);
+	UnloadShader(shader_darkness);
 	UnloadShader(shader_window);
 	UnloadShader(shader_lighting);
 }

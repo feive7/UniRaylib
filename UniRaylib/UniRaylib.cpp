@@ -79,7 +79,7 @@ int main(void) {
     Player player = { 0 };
     ResetPlayer(&player);
 
-    int viewpos_test = GetShaderLocation(shader_test, "viewPos");
+    int viewpos_test = GetShaderLocation(shader_darkness, "viewPos");
     int viewpos_lighting = GetShaderLocation(shader_lighting, "viewPos");
 
     std::vector<Ball> balls;
@@ -129,7 +129,7 @@ int main(void) {
             }
         }
         SetShaderValue(shader_lighting, viewpos_lighting, &freecam.position, SHADER_UNIFORM_VEC3);
-        SetShaderValue(shader_test, viewpos_test, &freecam.position, SHADER_UNIFORM_VEC3);
+        SetShaderValue(shader_darkness, viewpos_test, &freecam.position, SHADER_UNIFORM_VEC3);
 
         BeginDrawing();
         ClearBackground(BLACK); // Clear the background
