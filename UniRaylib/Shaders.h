@@ -4,7 +4,7 @@ Shader shader_none;
 Shader shader_darkness;
 Shader shader_lighting;
 
-int current_shader = 1;
+int current_shader = 0;
 Shader* shaders[] = {&shader_none,&shader_lighting,&shader_darkness};
 std::string shader_names[] = {"None","Lighting","Test"};
 const int shader_count = sizeof(shaders) / sizeof(Shader*);
