@@ -42,6 +42,7 @@ public:
 		bool touchingWall = false;
 		bool touchingCeiling = false;
 		for (Wall& wall : scene->walls) {
+			if (wall.flags & Wall_NO_COLLISIONS) continue; // Skip walls with no collisions
 			for (int i = 0; i < 4; i++) {
 				Vector2 A = wall.points[i];
 				Vector2 B = wall.points[(i + 1) % 4];

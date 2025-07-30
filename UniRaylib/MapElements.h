@@ -201,7 +201,7 @@ public:
 			Vector2* points = wall.points;
 			BeginShaderMode(override_shader ? *shader_override : *wall.shader);
 			rlBegin(RL_QUADS);
-			rlColor4ub(wall.tint.r,wall.tint.g,wall.tint.b,wall.tint.a);
+			rlColor4ub(wall.tint.r,wall.tint.g,wall.tint.b,wall.tint.a / (wall.flags & WALL_GLASS ? 2.0f : 1.0f));
 			rlSetTexture(wall.texture->id);
 
 			rlNormal3f(0.0f, -1.0f, 0.0f);
@@ -234,6 +234,7 @@ public:
 				rlTexCoord2f(1.0f, 1.0f); rlVertex3f(p2.x, wall.z, p2.y);
 				rlTexCoord2f(1.0f, 0.0f); rlVertex3f(p2.x, wall.z + wall.height, p2.y);
 				rlTexCoord2f(0.0f, 0.0f); rlVertex3f(p1.x, wall.z + wall.height, p1.y);
+				rlNormal3f(-normal.x, 0.0f, -normal.y);
 				rlTexCoord2f(0.0f, 0.0f); rlVertex3f(p1.x, wall.z + wall.height, p1.y);
 				rlTexCoord2f(1.0f, 0.0f); rlVertex3f(p2.x, wall.z + wall.height, p2.y);
 				rlTexCoord2f(1.0f, 1.0f); rlVertex3f(p2.x, wall.z, p2.y);
