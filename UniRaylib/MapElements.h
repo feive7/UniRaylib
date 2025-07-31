@@ -88,7 +88,9 @@ public:
 		Vector2 c = points[2];
 		Vector2 d = points[3];
 		return fabsf((a.x * (b.y - d.y) + b.x * (c.y - a.y) + c.x * (d.y - b.y) + d.x * (a.y - c.y)) / 2.0f);
-	
+	}
+	Vector2 midpoint() const { // unused
+		return Vector2Scale(points[0] + points[1] + points[2] + points[3], 0.25f);
 	}
 };
 class Portal {

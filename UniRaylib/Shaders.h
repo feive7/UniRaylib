@@ -13,7 +13,7 @@ void InitShaders() {
 
 	shader_none = LoadShader("assets/shaders/base.vs", "assets/shaders/base.fs");
 	shader_darkness = LoadShader("assets/shaders/darkness.vs", "assets/shaders/darkness.fs");
-	shader_lighting = LoadShader("assets/shaders/lighting.vs", "assets/shaders/lighting1.fs");
+	shader_lighting = LoadShader("assets/shaders/lighting.vs", "assets/shaders/lighting2.fs");
 }
 void UnloadShaders() {
 	UnloadShader(shader_window);
